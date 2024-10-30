@@ -3,4 +3,17 @@ name = "picrs"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "driver"
+path = "src/main.rs"
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+panic = "abort"
+
 [dependencies]
+toml = { version = "*" }
+serde = { version = "*" }
+serde_derive = { version = "*" }
+anyhow = { version = "*" }
