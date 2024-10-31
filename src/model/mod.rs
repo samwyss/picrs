@@ -1,9 +1,7 @@
-mod model {
-    struct Model {}
+pub struct Model {}
 
-    impl Model {
-        pub fn new() {}
+impl Model {
+    pub fn new() {}
 
-        pub fn run() {}
-    }
+    pub fn run() {}
 }
