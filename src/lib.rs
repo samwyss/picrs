@@ -1,3 +1,3 @@
 mod constants;
 mod geometry;
-mod model;
+pub mod model;
