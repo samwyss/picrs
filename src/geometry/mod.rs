@@ -1,7 +1,7 @@
 //! Geometry module
 //!
 //! describes the geometry of the simulation domain
-pub mod geometry {
+mod geometry {
 
     /// `Mesh` struct
     ///
