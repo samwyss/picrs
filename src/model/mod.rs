@@ -5,5 +5,5 @@ impl Model {
         Ok(Model {})
     }
 
-    pub fn run() {}
+    pub fn run(&mut self) {}
 }
