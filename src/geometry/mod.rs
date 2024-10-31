@@ -39,9 +39,9 @@ pub mod geometry {
                 CoordinateTriplet::new(cells[0], cells[1], cells[2])?;
 
             // initialize spatial increments
-            let dx = size.x / cells.x as f64;
-            let dy = size.y / cells.y as f64;
-            let dz = size.z / cells.z as f64;
+            let dx = size.x / (cells.x - 1) as f64;
+            let dy = size.y / (cells.y - 1) as f64;
+            let dz = size.z / (cells.z - 1) as f64;
             let delta: CoordinateTriplet<f64> = CoordinateTriplet::new(dx, dy, dz)?;
 
             Ok(Mesh { size, cells, delta })
