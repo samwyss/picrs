@@ -44,6 +44,8 @@ pub mod geometry {
             let dz = size.z / (cells.z - 1) as f64;
             let delta: CoordinateTriplet<f64> = CoordinateTriplet::new(dx, dy, dz)?;
 
+            todo!("add assertion that all spacing is less than that of the Debeye length");
+
             Ok(Mesh { size, cells, delta })
         }
     }
