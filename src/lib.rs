@@ -1,2 +1,3 @@
-mod geometry;
 mod constants;
+mod geometry;
+mod model;
