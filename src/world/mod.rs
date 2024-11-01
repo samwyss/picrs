@@ -6,6 +6,39 @@ use num::Zero;
 use std::fmt::{Display, Formatter};
 use std::ops::{Index, IndexMut};
 
+/// `CoordinateTriplet` struct
+///
+/// represents generic data that by nature has (x, y, z) components
+#[derive(Debug)]
+struct CoordinateTriplet<T> {
+    /// x component
+    x: T,
+
+    /// y component
+    y: T,
+
+    /// z component
+    z: T,
+}
+
+impl<T> CoordinateTriplet<T> {
+    /// `CoordinateTriplet` constructor
+    ///
+    /// # Arguments
+    /// - `x`: T x component
+    /// - `y`: T y component
+    /// - `z`: T z component
+    ///
+    /// # Returns
+    /// `Result<CoordinateTriplet<T>, anyhow::Error>`
+    ///
+    /// # Errors
+    ///
+    pub fn new(x: T, y: T, z: T) -> Result<CoordinateTriplet<T>, anyhow::Error> {
+        Ok(CoordinateTriplet { x, y, z })
+    }
+}
+
 /// `Mesh` struct
 ///
 /// mesh of the simulation domain
@@ -52,61 +85,44 @@ impl Mesh {
     }
 }
 
-/// `CoordinateTriplet` struct
-///
-/// represents generic data that by nature has (x, y, z) components
-#[derive(Debug)]
-struct CoordinateTriplet<T> {
-    /// x component
-    x: T,
-
-    /// y component
-    y: T,
-
-    /// z component
-    z: T,
-}
-
-impl<T> CoordinateTriplet<T> {
-    /// `CoordinateTriplet` constructor
-    ///
-    /// # Arguments
-    /// - `x`: T x component
-    /// - `y`: T y component
-    /// - `z`: T z component
-    ///
-    /// # Returns
-    /// `Result<CoordinateTriplet<T>, anyhow::Error>`
-    ///
-    /// # Errors
-    ///
-    pub fn new(x: T, y: T, z: T) -> Result<CoordinateTriplet<T>, anyhow::Error> {
-        Ok(CoordinateTriplet { x, y, z })
-    }
-}
-
 /// `ScalarField` struct
 ///
 /// describes a scalar field
 #[derive(Debug)]
 pub struct ScalarField<T: Zero + Copy> {
+    /// scalar field data
     data: Vec<T>,
-    size: [usize; 3],
+
+    /// size of the scalar field
+    size: CoordinateTriplet<usize>,
+
+    /// scalar field row offset
     r_offset: usize,
+
+    /// scalar field plane offset
     p_offset: usize,
 }
 
 impl<T: Zero + Copy> ScalarField<T> {
-    pub fn new(
-        x_cells: usize,
-        y_cells: usize,
-        z_cells: usize,
-    ) -> Result<ScalarField<T>, anyhow::Error> {
-        let size = [x_cells, y_cells, z_cells];
-        let r_offset = x_cells;
-        let p_offset = x_cells * y_cells;
+    /// `ScalarField` constructor
+    ///
+    /// # Arguments
+    /// - `cells`: CoordinateTriplet<usize> number of cells in bounding box
+    ///
+    /// # Returns
+    /// `Result<ScalarField<T>, anyhow::Error>`
+    ///
+    /// # Errors
+    ///
+    pub fn new(cells: CoordinateTriplet<usize>) -> Result<ScalarField<T>, anyhow::Error> {
 
-        let data: Vec<T> = vec![T::zero(); size[0] * size[1] * size[2]];
+        // define offsets
+        let r_offset = cells.x;
+        let p_offset = cells.x * cells.y;
+
+        // define initial vector field
+        let data: Vec<T> = vec![T::zero(); cells.x * cells.y * cells.z];
+
         Ok(ScalarField {
             data,
             size,
