@@ -1,4 +1,4 @@
-use crate::field::{ScalarField, VectorField};
+use crate::world::{ScalarField, VectorField};
 
 pub struct Model {}
 
