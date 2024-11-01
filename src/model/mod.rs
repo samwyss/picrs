@@ -8,13 +8,13 @@ impl Model {
     }
 
     pub fn run(&mut self) -> Result<(), anyhow::Error> {
-        let coordinates: CoordinateTriplet<usize> = CoordinateTriplet::new(1, 1, 1)?;
+        let coordinates: CoordinateTriplet<usize> = CoordinateTriplet::new(2, 2, 2)?;
 
         let mut field: ScalarField<f64> = ScalarField::new(coordinates)?;
 
-        field[(0, 0, 0)] = 1.0;
-
-        field *= 2.0;
+        field += 1.0;
+        field = field + 1.0;
+        field = 1.0 + field;
 
         println!("{}", field);
 
