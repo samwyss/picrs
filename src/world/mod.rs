@@ -4,7 +4,7 @@
 
 use num::Num;
 use std::fmt::{Display, Formatter};
-use std::ops::{Index, IndexMut, Add, Sub, Mul, Div, AddAssign, DivAssign, MulAssign, SubAssign};
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign};
 
 /// `CoordinateTriplet` struct
 ///
@@ -164,93 +164,6 @@ impl<T: Display> Display for ScalarField<T> {
             }
         }
         Ok(())
-    }
-}
-impl<T: Copy + AddAssign> Add<ScalarField<T>> for ScalarField<T> {
-    type Output = ScalarField<T>;
-
-    fn add(mut self, rhs: ScalarField<T>) -> Self::Output {
-        for (elem, num) in self.data.iter_mut().zip(&rhs.data) {
-            *elem += *num;
-        }
-        self
-    }
-}
-
-impl<T: Copy + SubAssign> Sub<ScalarField<T>> for ScalarField<T> {
-    type Output = ScalarField<T>;
-
-    fn sub(mut self, rhs: ScalarField<T>) -> Self::Output {
-        for (elem, num) in self.data.iter_mut().zip(&rhs.data) {
-            *elem -= *num;
-        }
-        self
-    }
-}
-
-impl<T: Copy + MulAssign> Mul<ScalarField<T>> for ScalarField<T> {
-    type Output = ScalarField<T>;
-
-    fn mul(mut self, rhs: ScalarField<T>) -> Self::Output {
-        for (elem, num) in self.data.iter_mut().zip(&rhs.data) {
-            *elem *= *num;
-        }
-        self
-    }
-}
-
-impl<T: Copy + DivAssign> Div<ScalarField<T>> for ScalarField<T> {
-    type Output = ScalarField<T>;
-
-    fn div(mut self, rhs: ScalarField<T>) -> Self::Output {
-        for (elem, num) in self.data.iter_mut().zip(&rhs.data) {
-            *elem /= *num;
-        }
-        self
-    }
-}
-
-impl<T: Copy + AddAssign> Add<T> for ScalarField<T> {
-    type Output = ScalarField<T>;
-
-    fn add(mut self, rhs: T) -> Self::Output {
-        for elem in self.data.iter_mut() {
-            *elem += rhs;
-        }
-        self
-    }
-}
-
-impl<T: Copy + SubAssign> Sub<T> for ScalarField<T> {
-    type Output = ScalarField<T>;
-
-    fn sub(mut self, rhs: T) -> Self::Output {
-        for elem in self.data.iter_mut() {
-            *elem -= rhs;
-        }
-        self
-    }
-}
-
-impl<T: Copy + MulAssign> Mul<T> for ScalarField<T> {
-    type Output = ScalarField<T>;
-
-    fn mul(mut self, rhs: T) -> Self::Output {
-        for elem in self.data.iter_mut() {
-            *elem *= rhs;
-        }
-        self
-    }
-}
-
-impl<T: Copy + DivAssign> Div<T> for ScalarField<T> {
-    type Output = ScalarField<T>;
-
-    fn div(mut self, rhs: T) -> Self::Output {
-        for elem in self.data.iter_mut() {
-            *elem /= rhs;
-        }
-        self
     }
 }
 
