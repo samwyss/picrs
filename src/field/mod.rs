@@ -1,3 +1,7 @@
+//! field module
+//!
+//! contains scalar and vector field types
+
 use crate::world::CoordinateTriplet;
 use num::Num;
 use std::fmt::{Display, Formatter};
