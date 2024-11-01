@@ -89,7 +89,7 @@ impl Mesh {
 ///
 /// describes a scalar field
 #[derive(Debug)]
-pub struct ScalarField<T: Num + Copy> {
+pub struct ScalarField<T> {
     /// scalar field data
     data: Vec<T>,
 
@@ -131,7 +131,7 @@ impl<T: Num + Copy> ScalarField<T> {
     }
 }
 
-impl<T: Num + Copy + Display> Index<(usize, usize, usize)> for ScalarField<T> {
+impl<T> Index<(usize, usize, usize)> for ScalarField<T> {
     type Output = T;
 
     fn index(&self, idx: (usize, usize, usize)) -> &Self::Output {
@@ -140,14 +140,14 @@ impl<T: Num + Copy + Display> Index<(usize, usize, usize)> for ScalarField<T> {
     }
 }
 
-impl<T: Num + Copy + Display> IndexMut<(usize, usize, usize)> for ScalarField<T> {
+impl<T> IndexMut<(usize, usize, usize)> for ScalarField<T> {
     fn index_mut(&mut self, index: (usize, usize, usize)) -> &mut Self::Output {
         let (i, j, k) = index;
         &mut self.data[i + self.r_offset * j + self.p_offset * k]
     }
 }
 
-impl<T: Num + Copy + Display> Display for ScalarField<T> {
+impl<T: Display> Display for ScalarField<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         for i in 0..self.cells.x {
             for j in 0..self.cells.y {
@@ -167,7 +167,7 @@ impl<T: Num + Copy + Display> Display for ScalarField<T> {
     }
 }
 
-impl<T: Num + Copy + Display> DivAssign<ScalarField<T>> for ScalarField<T> {
+impl<T: Copy + DivAssign> DivAssign<ScalarField<T>> for ScalarField<T> {
     fn div_assign(&mut self, rhs: Self) {
         for i in 0..self.cells.x {
             for j in 0..self.cells.y {
@@ -183,7 +183,7 @@ impl<T: Num + Copy + Display> DivAssign<ScalarField<T>> for ScalarField<T> {
 ///
 /// describes a vector field
 #[derive(Debug)]
-pub struct VectorField<T: Num + Copy + Display> {
+pub struct VectorField<T> {
     /// vector field data
     data: Vec<CoordinateTriplet<T>>,
 
@@ -197,7 +197,7 @@ pub struct VectorField<T: Num + Copy + Display> {
     p_offset: usize,
 }
 
-impl<T: Num + Copy + Display> VectorField<T> {
+impl<T: Num + Copy> VectorField<T> {
     /// `VectorField` constructor
     ///
     /// # Arguments
@@ -229,7 +229,7 @@ impl<T: Num + Copy + Display> VectorField<T> {
     }
 }
 
-impl<T: Num + Copy + Display> Index<(usize, usize, usize)> for VectorField<T> {
+impl<T> Index<(usize, usize, usize)> for VectorField<T> {
     type Output = CoordinateTriplet<T>;
 
     fn index(&self, idx: (usize, usize, usize)) -> &Self::Output {
@@ -238,14 +238,14 @@ impl<T: Num + Copy + Display> Index<(usize, usize, usize)> for VectorField<T> {
     }
 }
 
-impl<T: Num + Copy + Display> IndexMut<(usize, usize, usize)> for VectorField<T> {
+impl<T> IndexMut<(usize, usize, usize)> for VectorField<T> {
     fn index_mut(&mut self, index: (usize, usize, usize)) -> &mut Self::Output {
         let (i, j, k) = index;
         &mut self.data[i + self.r_offset * j + self.p_offset * k]
     }
 }
 
-impl<T: Num + Copy + Display> Display for VectorField<T> {
+impl<T: Display> Display for VectorField<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         for i in 0..self.cells.x {
             for j in 0..self.cells.y {
