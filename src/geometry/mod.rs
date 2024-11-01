@@ -1,6 +1,6 @@
-//! Geometry module
+//! geometry module
 //!
-//! describes the geometry of the simulation domain
+//! contents describe geometry of the simulation domain
 
 /// `Mesh` struct
 ///
