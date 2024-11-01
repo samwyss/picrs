@@ -9,16 +9,16 @@ use std::ops::{Index, IndexMut};
 /// `CoordinateTriplet` struct
 ///
 /// represents generic data that by nature has (x, y, z) components
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct CoordinateTriplet<T> {
     /// x component
-    x: T,
+    pub x: T,
 
     /// y component
-    y: T,
+    pub y: T,
 
     /// z component
-    z: T,
+    pub z: T,
 }
 
 impl<T> CoordinateTriplet<T> {
@@ -93,7 +93,7 @@ pub struct ScalarField<T: Zero + Copy> {
     /// scalar field data
     data: Vec<T>,
 
-    /// number of cells in ScalarField
+    /// number of cells in scalar field
     cells: CoordinateTriplet<usize>,
 
     /// scalar field row offset
@@ -115,7 +115,6 @@ impl<T: Zero + Copy> ScalarField<T> {
     /// # Errors
     ///
     pub fn new(cells: CoordinateTriplet<usize>) -> Result<ScalarField<T>, anyhow::Error> {
-
         // define offsets
         let r_offset = cells.x;
         let p_offset = cells.x * cells.y;
@@ -168,64 +167,86 @@ impl<T: Zero + Copy + Display> Display for ScalarField<T> {
     }
 }
 
+/// `VectorField` struct
+///
+/// describes a vector field
 #[derive(Debug)]
 pub struct VectorField<T: Zero + Copy + Display> {
-    data: Vec<[T; 3]>,
-    size: [usize; 3],
+    /// vector field data
+    data: Vec<CoordinateTriplet<T>>,
+
+    /// number of cells in vector field
+    cells: CoordinateTriplet<usize>,
+
+    /// vector field row offset
     r_offset: usize,
+
+    /// vector field plane offset
     p_offset: usize,
 }
 
 impl<T: Zero + Copy + Display> VectorField<T> {
-    pub fn new(
-        x_cells: usize,
-        y_cells: usize,
-        z_cells: usize,
-    ) -> Result<VectorField<T>, anyhow::Error> {
-        let size = [x_cells, y_cells, z_cells];
-        let r_offset = x_cells;
-        let p_offset = x_cells * y_cells;
+    /// `VectorField` constructor
+    ///
+    /// # Arguments
+    /// - `cells`: CoordinateTriplet<usize> number of cells in bounding box
+    ///
+    /// # Returns
+    /// `Result<VectorField<T>, anyhow::Error>`
+    ///
+    /// # Errors
+    /// - any call to `CoordinateTriplet::new()` fails
+    pub fn new(cells: CoordinateTriplet<usize>) -> Result<VectorField<T>, anyhow::Error> {
+        // define offsets
+        let r_offset = cells.x;
+        let p_offset = cells.x * cells.y;
 
-        let data: Vec<[T; 3]> = vec![[T::zero(); 3]; size[0] * size[1] * size[2]];
+        // define initial vector field
+        let data: Vec<CoordinateTriplet<T>> =
+            vec![
+                CoordinateTriplet::new(T::zero(), T::zero(), T::zero())?;
+                cells.x * cells.y * cells.z
+            ];
+
         Ok(VectorField {
             data,
-            size,
+            cells,
             r_offset,
             p_offset,
         })
     }
 }
 
-impl<T: Zero + Copy + Display> Index<(usize, usize, usize, usize)> for VectorField<T> {
-    type Output = T;
+impl<T: Zero + Copy + Display> Index<(usize, usize, usize)> for VectorField<T> {
+    type Output = CoordinateTriplet<T>;
 
-    fn index(&self, idx: (usize, usize, usize, usize)) -> &Self::Output {
-        let (i, j, k, dir) = idx;
-        &self.data[i + self.r_offset * j + self.p_offset * k][dir]
+    fn index(&self, idx: (usize, usize, usize)) -> &Self::Output {
+        let (i, j, k) = idx;
+        &self.data[i + self.r_offset * j + self.p_offset * k]
     }
 }
 
-impl<T: Zero + Copy + Display> IndexMut<(usize, usize, usize, usize)> for VectorField<T> {
-    fn index_mut(&mut self, index: (usize, usize, usize, usize)) -> &mut Self::Output {
-        let (i, j, k, dir) = index;
-        &mut self.data[i + self.r_offset * j + self.p_offset * k][dir]
+impl<T: Zero + Copy + Display> IndexMut<(usize, usize, usize)> for VectorField<T> {
+    fn index_mut(&mut self, index: (usize, usize, usize)) -> &mut Self::Output {
+        let (i, j, k) = index;
+        &mut self.data[i + self.r_offset * j + self.p_offset * k]
     }
 }
 
 impl<T: Zero + Copy + Display> Display for VectorField<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        for i in 0..self.size[0] {
-            for j in 0..self.size[1] {
-                for k in 0..self.size[2] {
+        for i in 0..self.cells.x {
+            for j in 0..self.cells.y {
+                for k in 0..self.cells.z {
                     write!(
                         f,
                         "VectorField({}, {}, {}) = [{}, {}, {}]\n",
                         i,
                         j,
                         k,
-                        self[(i, j, k, 0)],
-                        self[(i, j, k, 1)],
-                        self[(i, j, k, 2)]
+                        self[(i, j, k)].x,
+                        self[(i, j, k)].y,
+                        self[(i, j, k)].z
                     )?;
                 }
             }
