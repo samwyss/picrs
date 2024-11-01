@@ -10,7 +10,7 @@ use std::ops::{Index, IndexMut};
 ///
 /// represents generic data that by nature has (x, y, z) components
 #[derive(Debug)]
-struct CoordinateTriplet<T> {
+pub struct CoordinateTriplet<T> {
     /// x component
     x: T,
 
@@ -93,8 +93,8 @@ pub struct ScalarField<T: Zero + Copy> {
     /// scalar field data
     data: Vec<T>,
 
-    /// size of the scalar field
-    size: CoordinateTriplet<usize>,
+    /// number of cells in ScalarField
+    cells: CoordinateTriplet<usize>,
 
     /// scalar field row offset
     r_offset: usize,
@@ -125,7 +125,7 @@ impl<T: Zero + Copy> ScalarField<T> {
 
         Ok(ScalarField {
             data,
-            size,
+            cells,
             r_offset,
             p_offset,
         })
@@ -150,9 +150,9 @@ impl<T: Zero + Copy + Display> IndexMut<(usize, usize, usize)> for ScalarField<T
 
 impl<T: Zero + Copy + Display> Display for ScalarField<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        for i in 0..self.size[0] {
-            for j in 0..self.size[1] {
-                for k in 0..self.size[2] {
+        for i in 0..self.cells.x {
+            for j in 0..self.cells.y {
+                for k in 0..self.cells.z {
                     write!(
                         f,
                         "ScalarField({}, {}, {}) = {}\n",

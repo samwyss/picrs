@@ -1,4 +1,4 @@
-use crate::world::{ScalarField, VectorField};
+use crate::world::{CoordinateTriplet, ScalarField, VectorField};
 
 pub struct Model {}
 
@@ -8,7 +8,10 @@ impl Model {
     }
 
     pub fn run(&mut self) -> Result<(), anyhow::Error> {
-        let mut field: ScalarField<f64> = ScalarField::new(2, 2, 2)?;
+
+        let coordinates: CoordinateTriplet<usize> = CoordinateTriplet::new(2, 2, 2)?;
+
+        let mut field: ScalarField<f64> = ScalarField::new(coordinates)?;
         field[(1, 1, 1)] = 1000.0;
         field[(0, 0, 0)] = 1000.0;
 
