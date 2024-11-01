@@ -4,7 +4,7 @@
 
 use num::Num;
 use std::fmt::{Display, Formatter};
-use std::ops::{DivAssign, Index, IndexMut};
+use std::ops::{AddAssign, DivAssign, Index, IndexMut};
 
 /// `CoordinateTriplet` struct
 ///
@@ -173,6 +173,18 @@ impl<T: Copy + DivAssign> DivAssign<ScalarField<T>> for ScalarField<T> {
             for j in 0..self.cells.y {
                 for k in 0..self.cells.z {
                     self[(i, j, k)] /= rhs[(i, j, k)];
+                }
+            }
+        }
+    }
+}
+
+impl<T: Copy + AddAssign> AddAssign<ScalarField<T>> for ScalarField<T> {
+    fn add_assign(&mut self, rhs: ScalarField<T>) {
+        for i in 0..self.cells.x {
+            for j in 0..self.cells.y {
+                for k in 0..self.cells.z {
+                    self[(i, j, k)] += rhs[(i, j, k)];
                 }
             }
         }
