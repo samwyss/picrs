@@ -183,10 +183,10 @@ impl<T: Copy + SubAssign> SubAssign<ScalarField<T>> for ScalarField<T> {
     }
 }
 
-impl<T: Copy + MulAssign> MulAssign<T> for ScalarField<T> {
-    fn mul_assign(&mut self, rhs: T) {
-        for elem in self.data.iter_mut() {
-            *elem *= rhs;
+impl<T: Copy + MulAssign> MulAssign<ScalarField<T>> for ScalarField<T> {
+    fn mul_assign(&mut self, rhs: ScalarField<T>) {
+        for (elem, num) in self.data.iter_mut().zip(&rhs.data) {
+            *elem *= *num;
         }
     }
 }
@@ -195,6 +195,38 @@ impl<T: Copy + DivAssign> DivAssign<ScalarField<T>> for ScalarField<T> {
     fn div_assign(&mut self, rhs: Self) {
         for (elem, num) in self.data.iter_mut().zip(&rhs.data) {
             *elem /= *num;
+        }
+    }
+}
+
+impl<T: Copy + AddAssign> AddAssign<T> for ScalarField<T> {
+    fn add_assign(&mut self, rhs: T) {
+        for elem in self.data.iter_mut() {
+            *elem += rhs;
+        }
+    }
+}
+
+impl<T: Copy + SubAssign> SubAssign<T> for ScalarField<T> {
+    fn sub_assign(&mut self, rhs: T) {
+        for elem in self.data.iter_mut() {
+            *elem -= rhs;
+        }
+    }
+}
+
+impl<T: Copy + MulAssign> MulAssign<T> for ScalarField<T> {
+    fn mul_assign(&mut self, rhs: T) {
+        for elem in self.data.iter_mut() {
+            *elem *= rhs;
+        }
+    }
+}
+
+impl<T: Copy + DivAssign> DivAssign<T> for ScalarField<T> {
+    fn div_assign(&mut self, rhs: T) {
+        for elem in self.data.iter_mut() {
+            *elem /= rhs;
         }
     }
 }
