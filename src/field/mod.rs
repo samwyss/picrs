@@ -1,3 +1,7 @@
+//! field module
+//!
+//! contains several field types
+
 use num::Zero;
 use std::fmt::{Display, Formatter};
 use std::ops::{Index, IndexMut};
