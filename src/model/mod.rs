@@ -13,8 +13,7 @@ impl Model {
         let mut field: ScalarField<f64> = ScalarField::new(coordinates)?;
 
         field += 1.0;
-        field = field + 1.0;
-        field = 1.0 + field;
+        field /= 5.0;
 
         println!("{}", field);
 
