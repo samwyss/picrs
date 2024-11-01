@@ -4,7 +4,7 @@
 
 use num::Num;
 use std::fmt::{Display, Formatter};
-use std::ops::{AddAssign, DivAssign, Index, IndexMut};
+use std::ops::{AddAssign, DivAssign, Index, IndexMut, Mul, MulAssign};
 
 /// `CoordinateTriplet` struct
 ///
@@ -167,26 +167,26 @@ impl<T: Display> Display for ScalarField<T> {
     }
 }
 
-impl<T: Copy + DivAssign> DivAssign<ScalarField<T>> for ScalarField<T> {
-    fn div_assign(&mut self, rhs: Self) {
-        for i in 0..self.cells.x {
-            for j in 0..self.cells.y {
-                for k in 0..self.cells.z {
-                    self[(i, j, k)] /= rhs[(i, j, k)];
-                }
-            }
+impl<T: Copy + AddAssign> AddAssign<ScalarField<T>> for ScalarField<T> {
+    fn add_assign(&mut self, rhs: ScalarField<T>) {
+        for (elem, num) in self.data.iter_mut().zip(&rhs.data) {
+            *elem += *num;
         }
     }
 }
 
-impl<T: Copy + AddAssign> AddAssign<ScalarField<T>> for ScalarField<T> {
-    fn add_assign(&mut self, rhs: ScalarField<T>) {
-        for i in 0..self.cells.x {
-            for j in 0..self.cells.y {
-                for k in 0..self.cells.z {
-                    self[(i, j, k)] += rhs[(i, j, k)];
-                }
-            }
+impl<T: Copy + DivAssign> DivAssign<ScalarField<T>> for ScalarField<T> {
+    fn div_assign(&mut self, rhs: Self) {
+        for (elem, num) in self.data.iter_mut().zip(&rhs.data) {
+            *elem /= *num;
+        }
+    }
+}
+
+impl<T: Copy + MulAssign> MulAssign<T> for ScalarField<T> {
+    fn mul_assign(&mut self, rhs: T) {
+        for elem in self.data.iter_mut() {
+            *elem *= rhs;
         }
     }
 }
