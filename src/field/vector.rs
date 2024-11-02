@@ -79,13 +79,11 @@ impl<T: Display> Display for VectorField<T> {
                 for k in 0..self.cells.z {
                     write!(
                         f,
-                        "VectorField({}, {}, {}) = [{}, {}, {}]\n",
+                        "VectorField({}, {}, {}) = {}\n",
                         i,
                         j,
                         k,
-                        self[(i, j, k)].x,
-                        self[(i, j, k)].y,
-                        self[(i, j, k)].z
+                        self[(i, j, k)]
                     )?;
                 }
             }
