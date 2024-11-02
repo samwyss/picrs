@@ -2,7 +2,7 @@
 //!
 //! contents describe world of the simulation domain
 
-use std::fmt::Display;
+use std::fmt::{Display, Formatter};
 
 /// `CoordinateTriplet` struct
 ///
@@ -34,6 +34,12 @@ impl<T> CoordinateTriplet<T> {
     ///
     pub fn new(x: T, y: T, z: T) -> Result<CoordinateTriplet<T>, anyhow::Error> {
         Ok(CoordinateTriplet { x, y, z })
+    }
+}
+
+impl<T: Display> Display for CoordinateTriplet<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}, {}, {})", self.x, self.y, self.z)
     }
 }
 
