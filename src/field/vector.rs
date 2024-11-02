@@ -32,7 +32,10 @@ impl<T: Num + Copy> VectorField<T> {
     ///
     /// # Errors
     /// - any call to `CoordinateTriplet::new()` fails
-    pub fn new(cells: CoordinateTriplet<usize>) -> Result<VectorField<T>, anyhow::Error> {
+    pub fn new(cells: &CoordinateTriplet<usize>) -> Result<VectorField<T>, anyhow::Error> {
+        // clone cells
+        let cells = cells.clone();
+
         // define offsets
         let r_offset = cells.x;
         let p_offset = cells.x * cells.y;

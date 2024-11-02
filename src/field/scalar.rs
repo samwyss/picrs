@@ -32,7 +32,10 @@ impl<T: Num + Copy> ScalarField<T> {
     ///
     /// # Errors
     ///
-    pub fn new(cells: CoordinateTriplet<usize>) -> Result<ScalarField<T>, anyhow::Error> {
+    pub fn new(cells: &CoordinateTriplet<usize>) -> Result<ScalarField<T>, anyhow::Error> {
+        // clone cells
+        let cells = cells.clone();
+
         // define offsets
         let r_offset = cells.x;
         let p_offset = cells.x * cells.y;
@@ -146,13 +149,5 @@ impl<T: Copy + DivAssign> DivAssign<T> for ScalarField<T> {
         for elem in self.data.iter_mut() {
             *elem /= rhs;
         }
-    }
-}
-
-impl<T: Copy + Add> Add<ScalarField<T>> for ScalarField<T> {
-    type Output = ScalarField<T>;
-
-    fn add(self, rhs: ScalarField<T>) -> Self::Output {
-        self.data.into_iter().zip(rhs.data.into_iter()).map(|(l, r)| l + r).collect()
     }
 }
