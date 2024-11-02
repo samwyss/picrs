@@ -1,5 +1,5 @@
 use std::fmt::{Display, Formatter};
-use std::ops::{AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
+use std::ops::{Add, AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
 use num::Num;
 use crate::world::CoordinateTriplet;
 
@@ -146,5 +146,13 @@ impl<T: Copy + DivAssign> DivAssign<T> for ScalarField<T> {
         for elem in self.data.iter_mut() {
             *elem /= rhs;
         }
+    }
+}
+
+impl<T: Copy + Add> Add<ScalarField<T>> for ScalarField<T> {
+    type Output = ScalarField<T>;
+
+    fn add(self, rhs: ScalarField<T>) -> Self::Output {
+        self.data.into_iter().zip(rhs.data.into_iter()).map(|(l, r)| l + r).collect()
     }
 }
