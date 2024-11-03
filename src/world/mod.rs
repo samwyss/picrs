@@ -43,11 +43,11 @@ impl<T: Display> Display for CoordinateTriplet<T> {
     }
 }
 
-/// `Mesh` struct
+/// `World` struct
 ///
-/// mesh of the simulation domain
+/// describes the world of the simulation domain
 #[derive(Debug)]
-struct Mesh {
+struct World {
     /// (m) size of bounding box
     size: CoordinateTriplet<f64>,
 
@@ -58,19 +58,19 @@ struct Mesh {
     delta: CoordinateTriplet<f64>,
 }
 
-impl Mesh {
-    /// `Mesh` constructor
+impl World {
+    /// `World` constructor
     ///
     /// # Arguments
     /// - `size`: &[f64; 3] (m) size of bounding box
     /// - `cells`: &[u64; 3] number of cells
     ///
     /// # Returns
-    /// `Result<Mesh, anyhow::Error>`
+    /// `Result<World, anyhow::Error>`
     ///
     /// # Errors
     /// - any call to `CoordinateTriplet::new()` fails
-    pub fn new(size: &[f64; 3], cells: &[u64; 3]) -> Result<Mesh, anyhow::Error> {
+    pub fn new(size: &[f64; 3], cells: &[u64; 3]) -> Result<World, anyhow::Error> {
         // unpack dimensions
         let size: CoordinateTriplet<f64> = CoordinateTriplet::new(size[0], size[1], size[2])?;
 
@@ -85,6 +85,6 @@ impl Mesh {
 
         // todo add assertion that all spacing is less than that of the Debeye length
 
-        Ok(Mesh { size, cells, delta })
+        Ok(World { size, cells, delta })
     }
 }
