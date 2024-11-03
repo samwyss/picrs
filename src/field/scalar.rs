@@ -1,7 +1,7 @@
+use crate::world::CoordinateTriplet;
+use num::Num;
 use std::fmt::{Display, Formatter};
 use std::ops::{Add, AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
-use num::Num;
-use crate::world::CoordinateTriplet;
 
 /// `ScalarField` struct
 ///
@@ -49,6 +49,13 @@ impl<T: Num + Copy> ScalarField<T> {
             r_offset,
             p_offset,
         })
+    }
+
+    fn iter(&self) -> ScalarFieldIterator<T> {
+        ScalarFieldIterator {
+            field: &self,
+            idx: 0,
+        }
     }
 }
 
@@ -152,10 +159,27 @@ impl<T: Copy + DivAssign> DivAssign<T> for ScalarField<T> {
     }
 }
 
-struct ScalarFieldIterator<T> {
+struct ScalarFieldIterator<'a, T> {
+    /// scalar field
+    field: &'a ScalarField<T>,
+
     /// current index into scalar field
     idx: usize,
+}
 
-    /// total number of elements in scalar field
-    size: usize,
+impl<'a, T> Iterator for ScalarFieldIterator<'a, T>
+where
+    T: Copy,
+{
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match (0..self.field.data.len()).contains(&self.idx) {
+            true => {
+                self.idx += 1;
+                Some(self.field.data[self.idx - 1])
+            }
+            false => None,
+        }
+    }
 }
