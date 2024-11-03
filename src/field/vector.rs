@@ -1,14 +1,17 @@
-use std::fmt::{Display, Formatter};
-use std::ops::{AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
-use num::Num;
 use crate::field::scalar::ScalarField;
 use crate::world::CoordinateTriplet;
+use num::Num;
+use std::fmt::{Display, Formatter};
+use std::ops::{AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
 
 /// `VectorField` struct
 ///
 /// describes a vector field
 #[derive(Debug)]
 pub struct VectorField<T> {
+    /// number of cells in vector field
+    cells: CoordinateTriplet<usize>,
+
     /// x component of vector field
     x: ScalarField<T>,
 
@@ -23,34 +26,22 @@ impl<T: Num + Copy> VectorField<T> {
     /// `VectorField` constructor
     ///
     /// # Arguments
-    /// - `cells`: CoordinateTriplet<usize> number of cells in bounding box
+    /// - `cells`: &CoordinateTriplet<usize> number of cells in bounding box
     ///
     /// # Returns
     /// `Result<VectorField<T>, anyhow::Error>`
     ///
     /// # Errors
-    /// - any call to `CoordinateTriplet::new()` fails
+    /// - any call to `ScalarField::new()` errors
     pub fn new(cells: &CoordinateTriplet<usize>) -> Result<VectorField<T>, anyhow::Error> {
-        // clone cells
         let cells = cells.clone();
 
-        // define offsets
-        let r_offset = cells.x;
-        let p_offset = cells.x * cells.y;
+        // create subfields
+        let x = ScalarField::new(&cells)?;
+        let y = ScalarField::new(&cells)?;
+        let z = ScalarField::new(&cells)?;
 
-        // define initial vector field
-        let data: Vec<CoordinateTriplet<T>> =
-            vec![
-                CoordinateTriplet::new(T::zero(), T::zero(), T::zero())?;
-                cells.x * cells.y * cells.z
-            ];
-
-        Ok(VectorField {
-            data,
-            cells,
-            r_offset,
-            p_offset,
-        })
+        Ok(VectorField { cells, x, y, z })
     }
 }
 
