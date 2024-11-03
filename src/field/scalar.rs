@@ -14,17 +14,11 @@ pub struct ScalarField<T> {
     /// number of cells in scalar field
     cells: CoordinateTriplet<usize>,
 
-    /// total number of elements in scalar field
-    size: usize,
-
     /// scalar field row offset
     r_offset: usize,
 
     /// scalar field plane offset
     p_offset: usize,
-
-    /// current index into scalar field
-    idx: usize,
 }
 
 impl<T: Num + Copy> ScalarField<T> {
@@ -45,8 +39,6 @@ impl<T: Num + Copy> ScalarField<T> {
         // define offsets
         let r_offset = cells.x;
         let p_offset = cells.x * cells.y;
-        let size = cells.x * cells.y * cells.z;
-        let idx = 0;
 
         // define initial vector field
         let data: Vec<T> = vec![T::zero(); cells.x * cells.y * cells.z];
@@ -54,10 +46,8 @@ impl<T: Num + Copy> ScalarField<T> {
         Ok(ScalarField {
             data,
             cells,
-            size,
             r_offset,
             p_offset,
-            idx,
         })
     }
 }
@@ -160,4 +150,12 @@ impl<T: Copy + DivAssign> DivAssign<T> for ScalarField<T> {
             *elem /= rhs;
         }
     }
+}
+
+struct ScalarFieldIterator<T> {
+    /// current index into scalar field
+    idx: usize,
+
+    /// total number of elements in scalar field
+    size: usize,
 }
