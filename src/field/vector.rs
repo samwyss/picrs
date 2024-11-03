@@ -1,6 +1,7 @@
 use std::fmt::{Display, Formatter};
 use std::ops::{AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
 use num::Num;
+use crate::field::scalar::ScalarField;
 use crate::world::CoordinateTriplet;
 
 /// `VectorField` struct
@@ -8,17 +9,14 @@ use crate::world::CoordinateTriplet;
 /// describes a vector field
 #[derive(Debug)]
 pub struct VectorField<T> {
-    /// vector field data
-    data: Vec<CoordinateTriplet<T>>,
+    /// x component of vector field
+    x: ScalarField<T>,
 
-    /// number of cells in vector field
-    cells: CoordinateTriplet<usize>,
+    /// y component of vector field
+    y: ScalarField<T>,
 
-    /// vector field row offset
-    r_offset: usize,
-
-    /// vector field plane offset
-    p_offset: usize,
+    /// z component of vector field
+    z: ScalarField<T>,
 }
 
 impl<T: Num + Copy> VectorField<T> {
