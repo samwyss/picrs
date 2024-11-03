@@ -1,3 +1,4 @@
+use crate::field::scalar::ScalarField;
 use crate::field::vector::VectorField;
 use crate::world::CoordinateTriplet;
 
@@ -9,14 +10,23 @@ impl Model {
     }
 
     pub fn run(&mut self) -> Result<(), anyhow::Error> {
-        let coordinates: CoordinateTriplet<usize> = CoordinateTriplet::new(100, 100, 100)?;
+        let coordinates: CoordinateTriplet<usize> = CoordinateTriplet::new(3, 3, 3)?;
 
-        let mut field: VectorField<f64> = VectorField::new(&coordinates)?;
+        let mut vfield: VectorField<f64> = VectorField::new(&coordinates)?;
+        let mut sfield: ScalarField<f64> = ScalarField::new(&coordinates)?;
+        
+        sfield += 10.0;
+        sfield *= 2.0;
+        sfield -= 5.0;
+        sfield /= 5.0;
+        
+        vfield += 10.0;
+        vfield *= 2.0;
+        vfield -= 5.0;
+        vfield /= 5.0;
 
-        field += 1.0;
-        field /= 5.0;
-
-        println!("{}", field[(1,1,1)].x);
+        println!("{}", sfield);
+        println!("{}", vfield);
 
         Ok(())
     }

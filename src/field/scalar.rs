@@ -51,11 +51,12 @@ impl<T: Num + Copy> ScalarField<T> {
         })
     }
 
-    fn iter(&self) -> ScalarFieldIterator<T> {
-        ScalarFieldIterator {
-            field: &self,
-            idx: 0,
-        }
+    pub fn iter<'a>(&'a self) -> impl Iterator<Item = &'a T> + 'a {
+        self.data.iter()
+    }
+    
+    pub fn iter_mut<'a>(&'a mut self) -> impl Iterator<Item = &'a mut T> + 'a {
+        self.data.iter_mut()
     }
 }
 
@@ -159,27 +160,4 @@ impl<T: Copy + DivAssign> DivAssign<T> for ScalarField<T> {
     }
 }
 
-struct ScalarFieldIterator<'a, T> {
-    /// scalar field
-    field: &'a ScalarField<T>,
 
-    /// current index into scalar field
-    idx: usize,
-}
-
-impl<'a, T> Iterator for ScalarFieldIterator<'a, T>
-where
-    T: Copy,
-{
-    type Item = T;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        match (0..self.field.data.len()).contains(&self.idx) {
-            true => {
-                self.idx += 1;
-                Some(self.field.data[self.idx - 1])
-            }
-            false => None,
-        }
-    }
-}

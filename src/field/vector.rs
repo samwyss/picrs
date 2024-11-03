@@ -13,13 +13,13 @@ pub struct VectorField<T> {
     cells: CoordinateTriplet<usize>,
 
     /// x component of vector field
-    x: ScalarField<T>,
+    pub x: ScalarField<T>,
 
     /// y component of vector field
-    y: ScalarField<T>,
+    pub y: ScalarField<T>,
 
     /// z component of vector field
-    z: ScalarField<T>,
+    pub z: ScalarField<T>,
 }
 
 impl<T: Num + Copy> VectorField<T> {
@@ -45,22 +45,6 @@ impl<T: Num + Copy> VectorField<T> {
     }
 }
 
-impl<T> Index<(usize, usize, usize)> for VectorField<T> {
-    type Output = CoordinateTriplet<T>;
-
-    fn index(&self, idx: (usize, usize, usize)) -> &Self::Output {
-        let (i, j, k) = idx;
-        &self.data[i + self.r_offset * j + self.p_offset * k]
-    }
-}
-
-impl<T> IndexMut<(usize, usize, usize)> for VectorField<T> {
-    fn index_mut(&mut self, index: (usize, usize, usize)) -> &mut Self::Output {
-        let (i, j, k) = index;
-        &mut self.data[i + self.r_offset * j + self.p_offset * k]
-    }
-}
-
 impl<T: Display> Display for VectorField<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         for i in 0..self.cells.x {
@@ -68,11 +52,13 @@ impl<T: Display> Display for VectorField<T> {
                 for k in 0..self.cells.z {
                     write!(
                         f,
-                        "VectorField({}, {}, {}) = {}\n",
+                        "VectorField({}, {}, {}) = [{}, {}, {}]\n",
                         i,
                         j,
                         k,
-                        self[(i, j, k)]
+                        self.x[(i, j, k)],
+                        self.y[(i, j, k)],
+                        self.z[(i, k, j)],
                     )?;
                 }
             }
@@ -81,82 +67,130 @@ impl<T: Display> Display for VectorField<T> {
     }
 }
 
-impl<T: Copy + AddAssign> AddAssign<VectorField<T>> for VectorField<T> {
+impl<T: Copy + AddAssign + Num> AddAssign<VectorField<T>> for VectorField<T> {
     fn add_assign(&mut self, rhs: VectorField<T>) {
-        for (elem, num) in self.data.iter_mut().zip(&rhs.data) {
-            elem.x += num.x;
-            elem.y += num.y;
-            elem.z += num.z;
+        for (elem, num) in self.x.iter_mut().zip(rhs.x.iter()) {
+            *elem += *num;
+        }
+        
+        for (elem, num) in self.y.iter_mut().zip(rhs.y.iter()) {
+            *elem += *num;
+        }
+        
+        for (elem, num) in self.z.iter_mut().zip(rhs.z.iter()) {
+            *elem += *num;
         }
     }
 }
 
-impl<T: Copy + SubAssign> SubAssign<VectorField<T>> for VectorField<T> {
+impl<T: Copy + SubAssign + Num> SubAssign<VectorField<T>> for VectorField<T> {
     fn sub_assign(&mut self, rhs: VectorField<T>) {
-        for (elem, num) in self.data.iter_mut().zip(&rhs.data) {
-            elem.x -= num.x;
-            elem.y -= num.y;
-            elem.z -= num.z;
+        for (elem, num) in self.x.iter_mut().zip(rhs.x.iter()) {
+            *elem -= *num;
+        }
+        
+        for (elem, num) in self.y.iter_mut().zip(rhs.y.iter()) {
+            *elem -= *num;
+        }
+        
+        for (elem, num) in self.z.iter_mut().zip(rhs.z.iter()) {
+            *elem -= *num;
         }
     }
 }
 
-impl<T: Copy + MulAssign> MulAssign<VectorField<T>> for VectorField<T> {
+impl<T: Copy + MulAssign + Num> MulAssign<VectorField<T>> for VectorField<T> {
     fn mul_assign(&mut self, rhs: VectorField<T>) {
-        for (elem, num) in self.data.iter_mut().zip(&rhs.data) {
-            elem.x *= num.x;
-            elem.y *= num.y;
-            elem.z *= num.z;
+        for (elem, num) in self.x.iter_mut().zip(rhs.x.iter()) {
+            *elem *= *num;
+        }
+        
+        for (elem, num) in self.y.iter_mut().zip(rhs.y.iter()) {
+            *elem *= *num;
+        }
+        
+        for (elem, num) in self.z.iter_mut().zip(rhs.z.iter()) {
+            *elem *= *num;
         }
     }
 }
 
-impl<T: Copy + DivAssign> DivAssign<VectorField<T>> for VectorField<T> {
+impl<T: Copy + DivAssign + Num> DivAssign<VectorField<T>> for VectorField<T> {
     fn div_assign(&mut self, rhs: VectorField<T>) {
-        for (elem, num) in self.data.iter_mut().zip(&rhs.data) {
-            elem.x /= num.x;
-            elem.y /= num.y;
-            elem.z /= num.z;
+        for (elem, num) in self.x.iter_mut().zip(rhs.x.iter()) {
+            *elem /= *num;
+        }
+        
+        for (elem, num) in self.y.iter_mut().zip(rhs.y.iter()) {
+            *elem /= *num;
+        }
+        
+        for (elem, num) in self.z.iter_mut().zip(rhs.z.iter()) {
+            *elem /= *num;
         }
     }
 }
 
-impl<T: Copy + AddAssign> AddAssign<T> for VectorField<T> {
+impl<T: Copy + AddAssign + Num> AddAssign<T> for VectorField<T> {
     fn add_assign(&mut self, rhs: T) {
-        for elem in self.data.iter_mut() {
-            elem.x += rhs;
-            elem.y += rhs;
-            elem.z += rhs;
+        for elem in self.x.iter_mut() {
+            *elem += rhs;
+        }
+        
+        for elem in self.y.iter_mut() {
+            *elem += rhs;
+        }
+        
+        for elem in self.z.iter_mut() {
+            *elem += rhs;
         }
     }
 }
 
-impl<T: Copy + SubAssign> SubAssign<T> for VectorField<T> {
+impl<T: Copy + SubAssign + Num> SubAssign<T> for VectorField<T> {
     fn sub_assign(&mut self, rhs: T) {
-        for elem in self.data.iter_mut() {
-            elem.x -= rhs;
-            elem.y -= rhs;
-            elem.z -= rhs;
+        for elem in self.x.iter_mut() {
+            *elem -= rhs;
+        }
+        
+        for elem in self.y.iter_mut() {
+            *elem -= rhs;
+        }
+        
+        for elem in self.z.iter_mut() {
+            *elem -= rhs;
         }
     }
 }
 
-impl<T: Copy + MulAssign> MulAssign<T> for VectorField<T> {
+impl<T: Copy + MulAssign + Num> MulAssign<T> for VectorField<T> {
     fn mul_assign(&mut self, rhs: T) {
-        for elem in self.data.iter_mut() {
-            elem.x *= rhs;
-            elem.y *= rhs;
-            elem.z *= rhs;
+        for elem in self.x.iter_mut() {
+            *elem *= rhs;
+        }
+        
+        for elem in self.y.iter_mut() {
+            *elem *= rhs;
+        }
+        
+        for elem in self.z.iter_mut() {
+            *elem *= rhs;
         }
     }
 }
 
-impl<T: Copy + DivAssign> DivAssign<T> for VectorField<T> {
+impl<T: Copy + DivAssign + Num> DivAssign<T> for VectorField<T> {
     fn div_assign(&mut self, rhs: T) {
-        for elem in self.data.iter_mut() {
-            elem.x /= rhs;
-            elem.y /= rhs;
-            elem.z /= rhs;
+        for elem in self.x.iter_mut() {
+            *elem /= rhs;
+        }
+        
+        for elem in self.y.iter_mut() {
+            *elem /= rhs;
+        }
+        
+        for elem in self.z.iter_mut() {
+            *elem /= rhs;
         }
     }
 }
