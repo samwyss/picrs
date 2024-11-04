@@ -56,7 +56,7 @@ mod tests {
     use crate::helpers::coordinate_triplet::CoordinateTriplet;
     use crate::world::World;
 
-    fn new_setup() -> Result<World, anyhow::Error> {
+    fn setup() -> Result<World, anyhow::Error> {
         let size: [f64; 3] = [1.0, 2.0, 3.0];
         let cells: [u64; 3] = [3, 11, 31];
         World::new(&size, &cells)
@@ -69,7 +69,7 @@ mod tests {
     ///
     #[test]
     fn new_success() {
-        assert!(new_setup().is_ok());
+        assert!(setup().is_ok());
     }
 
     /// tests `World::new()` for correct setting of size member
@@ -82,7 +82,7 @@ mod tests {
     #[test]
     fn new_correct_size() {
         // create world for testing
-        let world = new_setup().unwrap();
+        let world = setup().unwrap();
 
         // assertions
         assert_eq!(world.size.x, 1.0);
@@ -100,7 +100,7 @@ mod tests {
     #[test]
     fn new_correct_cells() {
         // create world for testing
-        let world = new_setup().unwrap();
+        let world = setup().unwrap();
 
         // assertions
         assert_eq!(world.cells.x, 3);
@@ -118,7 +118,7 @@ mod tests {
     #[test]
     fn new_correct_delta() {
         // create world for testing
-        let world = new_setup().unwrap();
+        let world = setup().unwrap();
 
         // assertions
         assert_eq!(world.delta.x, 0.5);
