@@ -1,14 +1,40 @@
+//! model module
+//!
+//! describes a model facade struct for using picrs
+
 use crate::field::scalar::ScalarField;
 use crate::field::vector::VectorField;
 use crate::helpers::coordinate_triplet::CoordinateTriplet;
 
+/// `Model` struct
+///
+/// provides a facade for using picrs
 pub struct Model {}
 
 impl Model {
+    /// `Model` constructor
+    ///
+    /// # Arguments
+    ///
+    /// # Returns
+    /// `Result<Model, anyhow::Error>`
+    ///
+    /// # Errors
+    ///
     pub fn new() -> Result<Model, anyhow::Error> {
         Ok(Model {})
     }
 
+    /// runs configured `Model`
+    ///
+    /// # Arguments
+    /// - `&mut self` mutable reference to self
+    ///
+    /// # Returns
+    /// `Result<(), anyhow::Error>`
+    ///
+    /// # Errors
+    ///
     pub fn run(&mut self) -> Result<(), anyhow::Error> {
         let coordinates: CoordinateTriplet<usize> = CoordinateTriplet::new(3, 3, 3)?;
 
@@ -30,4 +56,9 @@ impl Model {
 
         Ok(())
     }
+}
+
+#[cfg(test)]
+mod test {
+    
 }
