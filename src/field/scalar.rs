@@ -3,7 +3,7 @@ use num::Num;
 use std::fmt::{Display, Formatter};
 use std::ops::{Add, AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
 
-/// `ScalarField` struct
+/// `ScalarField<T>` struct
 ///
 /// describes a scalar field
 #[derive(Debug)]
@@ -22,7 +22,7 @@ pub struct ScalarField<T> {
 }
 
 impl<T: Num + Copy> ScalarField<T> {
-    /// `ScalarField` constructor
+    /// `ScalarField<T>` constructor
     ///
     /// # Arguments
     /// - `cells`: CoordinateTriplet<usize> number of cells in bounding box
@@ -51,7 +51,7 @@ impl<T: Num + Copy> ScalarField<T> {
         })
     }
 
-    /// returns an iterator over `ScalarField`
+    /// returns an iterator over `ScalarField<T>`
     ///
     /// # Arguments
     /// - `&'a self` reference to self
@@ -65,7 +65,7 @@ impl<T: Num + Copy> ScalarField<T> {
         self.data.iter()
     }
     
-    /// returns a mutable iterator over `ScalarField`
+    /// returns a mutable iterator over `ScalarField<T>`
     ///
     /// # Arguments
     /// - `&'a mut self` mutable reference to self
@@ -80,7 +80,7 @@ impl<T: Num + Copy> ScalarField<T> {
     }
 }
 
-/// implements [] operator on `ScalarField`
+/// implements [] operator on `ScalarField<T>`
 impl<T> Index<(usize, usize, usize)> for ScalarField<T> {
     type Output = T;
     
@@ -104,7 +104,7 @@ impl<T> Index<(usize, usize, usize)> for ScalarField<T> {
     }
 }
 
-/// implements mutable [] operator on `ScalarField`
+/// implements mutable [] operator on `ScalarField<T>`
 impl<T> IndexMut<(usize, usize, usize)> for ScalarField<T> {
     /// returns a mutable reference to scalar field data stored at desired index
     ///
@@ -126,7 +126,7 @@ impl<T> IndexMut<(usize, usize, usize)> for ScalarField<T> {
     }
 }
 
-/// allows `ScalarField` to be written in a text format
+/// allows `ScalarField<T>` to be written in a text format
 impl<T: Display> Display for ScalarField<T> {
     /// writes `ScalarField` in a text format
     ///
