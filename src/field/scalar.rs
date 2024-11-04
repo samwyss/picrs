@@ -1,4 +1,4 @@
-use crate::world::CoordinateTriplet;
+use crate::helpers::coordinate_triplet::CoordinateTriplet;
 use num::Num;
 use std::fmt::{Display, Formatter};
 use std::ops::{Add, AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};

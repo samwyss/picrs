@@ -1,6 +1,6 @@
 use crate::field::scalar::ScalarField;
 use crate::field::vector::VectorField;
-use crate::world::CoordinateTriplet;
+use crate::helpers::coordinate_triplet::CoordinateTriplet;
 
 pub struct Model {}
 

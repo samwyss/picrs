@@ -1,5 +1,5 @@
 use crate::field::scalar::ScalarField;
-use crate::world::CoordinateTriplet;
+use crate::helpers::coordinate_triplet::CoordinateTriplet;
 use num::Num;
 use std::fmt::{Display, Formatter};
 use std::ops::{AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
