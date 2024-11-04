@@ -49,3 +49,8 @@ impl World {
         Ok(World { size, cells, delta })
     }
 }
+
+#[cfg(test)]
+mod test {
+    
+}
