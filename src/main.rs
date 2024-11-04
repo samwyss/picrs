@@ -20,7 +20,7 @@ fn main() -> Result<(), anyhow::Error> {
     let mut model = Model::new()?;
 
     // run model
-    model.run();
+    model.run()?;
 
     println!("Hello, world!");
 
