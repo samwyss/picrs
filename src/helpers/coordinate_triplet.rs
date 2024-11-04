@@ -50,7 +50,7 @@ mod tests {
     /// - `CoordinateTriplet::new()` fails for u64
     ///
     #[test]
-    fn coordinate_triplet_new() {
+    fn new_success() {
         // test f64
         let a: CoordinateTriplet<f64> = CoordinateTriplet::new(1.0, 2.0, 3.0).unwrap();
         assert_eq!(CoordinateTriplet {x: 1.0, y: 2.0, z: 3.0}, a);
