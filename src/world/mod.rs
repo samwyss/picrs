@@ -52,5 +52,77 @@ impl World {
 
 #[cfg(test)]
 mod tests {
-    
+    use std::any::Any;
+    use crate::helpers::coordinate_triplet::CoordinateTriplet;
+    use crate::world::World;
+
+    fn new_setup() -> Result<World, anyhow::Error> {
+        let size: [f64; 3] = [1.0, 2.0, 3.0];
+        let cells: [u64; 3] = [3, 11, 31];
+        World::new(&size, &cells)
+    }
+
+    /// tests `World::new()` for success
+    ///
+    /// # Errors
+    /// - `world::new()` fails for valid input
+    ///
+    #[test]
+    fn new_success() {
+        assert!(new_setup().is_ok());
+    }
+
+    /// tests `World::new()` for correct setting of size member
+    ///
+    /// # Errors
+    /// - `world::new()` sets incorrect `world.size.x`
+    /// - `world::new()` sets incorrect `world.size.y`
+    /// - `world::new()` sets incorrect `world.size.z`
+    ///
+    #[test]
+    fn new_correct_size() {
+        // create world for testing
+        let world = new_setup().unwrap();
+
+        // assertions
+        assert_eq!(world.size.x, 1.0);
+        assert_eq!(world.size.y, 2.0);
+        assert_eq!(world.size.z, 3.0);
+    }
+
+    /// tests `World::new()` for correct setting of cells member
+    ///
+    /// # Errors
+    /// - `world::new()` sets incorrect `world.cells.x`
+    /// - `world::new()` sets incorrect `world.cells.y`
+    /// - `world::new()` sets incorrect `world.cells.z`
+    ///
+    #[test]
+    fn new_correct_cells() {
+        // create world for testing
+        let world = new_setup().unwrap();
+
+        // assertions
+        assert_eq!(world.cells.x, 3);
+        assert_eq!(world.cells.y, 11);
+        assert_eq!(world.cells.z, 31);
+    }
+
+    /// tests `World::new()` for correct setting of delta member
+    ///
+    /// # Errors
+    /// - `world::new()` sets incorrect `world.delta.x`
+    /// - `world::new()` sets incorrect `world.delta.y`
+    /// - `world::new()` sets incorrect `world.delta.z`
+    ///
+    #[test]
+    fn new_correct_delta() {
+        // create world for testing
+        let world = new_setup().unwrap();
+
+        // assertions
+        assert_eq!(world.delta.x, 0.5);
+        assert_eq!(world.delta.y, 0.2);
+        assert_eq!(world.delta.z, 0.1);
+    }
 }
