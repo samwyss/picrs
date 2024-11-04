@@ -160,4 +160,7 @@ impl<T: Copy + DivAssign> DivAssign<T> for ScalarField<T> {
     }
 }
 
-
+#[cfg(test)]
+mod tests {
+    
+}

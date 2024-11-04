@@ -194,3 +194,8 @@ impl<T: Copy + DivAssign + Num> DivAssign<T> for VectorField<T> {
         }
     }
 }
+
+#[cfg(test)]
+mod tests{
+    
+}
