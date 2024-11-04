@@ -312,7 +312,6 @@ impl<T: Copy + DivAssign> DivAssign<T> for ScalarField<T> {
 
 #[cfg(test)]
 mod tests {
-    use num::Num;
     use crate::field::scalar::ScalarField;
     use crate::helpers::coordinate_triplet::CoordinateTriplet;
 
