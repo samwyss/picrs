@@ -15,7 +15,7 @@ use picrs::model::Model;
 /// # Errors
 fn main() -> Result<(), anyhow::Error> {
     // todo take io prefix from command line
-    
+
     // todo create configuration from disk somehow
 
     // construct model
@@ -28,6 +28,6 @@ fn main() -> Result<(), anyhow::Error> {
 }
 
 #[cfg(test)]
-mod test {
-    
+mod tests {
+
 }

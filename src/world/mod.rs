@@ -51,6 +51,6 @@ impl World {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     
 }

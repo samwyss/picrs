@@ -59,6 +59,6 @@ impl Model {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     
 }

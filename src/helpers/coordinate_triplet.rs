@@ -40,6 +40,6 @@ impl<T: Display> Display for CoordinateTriplet<T> {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     
 }
