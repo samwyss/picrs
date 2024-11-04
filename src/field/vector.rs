@@ -80,9 +80,9 @@ impl<T: Display> Display for VectorField<T> {
     }
 }
 
-/// implements VectorField<T> += VectorField<T>
+/// implements `VectorField<T> += VectorField<T>`
 impl<T: Copy + AddAssign + Num> AddAssign<VectorField<T>> for VectorField<T> {
-    /// implements VectorField<T> += VectorField<T>
+    /// implements `VectorField<T> += VectorField<T>`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
@@ -110,9 +110,9 @@ impl<T: Copy + AddAssign + Num> AddAssign<VectorField<T>> for VectorField<T> {
     }
 }
 
-/// implements VectorField<T> -= VectorField<T>
+/// implements `VectorField<T> -= VectorField<T>`
 impl<T: Copy + SubAssign + Num> SubAssign<VectorField<T>> for VectorField<T> {
-    /// implements VectorField<T> -= VectorField<T>
+    /// implements `VectorField<T> -= VectorField<T>`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
@@ -139,9 +139,9 @@ impl<T: Copy + SubAssign + Num> SubAssign<VectorField<T>> for VectorField<T> {
     }
 }
 
-/// implements VectorField<T> *= VectorField<T>
+/// implements `VectorField<T> *= VectorField<T>`
 impl<T: Copy + MulAssign + Num> MulAssign<VectorField<T>> for VectorField<T> {
-    /// implements VectorField<T> *= VectorField<T>
+    /// implements `VectorField<T> *= VectorField<T>`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
@@ -169,9 +169,9 @@ impl<T: Copy + MulAssign + Num> MulAssign<VectorField<T>> for VectorField<T> {
     }
 }
 
-/// implements VectorField<T> /= VectorField<T>
+/// implements `VectorField<T> /= VectorField<T>`
 impl<T: Copy + DivAssign + Num> DivAssign<VectorField<T>> for VectorField<T> {
-    /// implements VectorField<T> /= VectorField<T>
+    /// implements `VectorField<T> /= VectorField<T>`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
@@ -199,8 +199,9 @@ impl<T: Copy + DivAssign + Num> DivAssign<VectorField<T>> for VectorField<T> {
     }
 }
 
+/// implements `VectorField<T> += T`
 impl<T: Copy + AddAssign + Num> AddAssign<T> for VectorField<T> {
-    /// implements VectorField<T> += T
+    /// implements `VectorField<T> += T`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
@@ -228,8 +229,9 @@ impl<T: Copy + AddAssign + Num> AddAssign<T> for VectorField<T> {
     }
 }
 
+/// implements `VectorField<T> -= T`
 impl<T: Copy + SubAssign + Num> SubAssign<T> for VectorField<T> {
-    /// implements VectorField<T> -= T
+    /// implements `VectorField<T> -= T`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
@@ -257,8 +259,9 @@ impl<T: Copy + SubAssign + Num> SubAssign<T> for VectorField<T> {
     }
 }
 
+/// implements `VectorField<T> *= T`
 impl<T: Copy + MulAssign + Num> MulAssign<T> for VectorField<T> {
-    /// implements VectorField<T> *= T
+    /// implements `VectorField<T> *= T`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
@@ -286,8 +289,9 @@ impl<T: Copy + MulAssign + Num> MulAssign<T> for VectorField<T> {
     }
 }
 
+/// implements `VectorField<T> /= T`
 impl<T: Copy + DivAssign + Num> DivAssign<T> for VectorField<T> {
-    /// implements VectorField<T> /= T
+    /// implements `VectorField<T> /= T`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
