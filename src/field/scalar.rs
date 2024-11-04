@@ -312,5 +312,343 @@ impl<T: Copy + DivAssign> DivAssign<T> for ScalarField<T> {
 
 #[cfg(test)]
 mod tests {
+    use num::Num;
+    use crate::field::scalar::ScalarField;
+    use crate::helpers::coordinate_triplet::CoordinateTriplet;
+
+    /// helper function that sets up a `ScalarField<f64>` for testing
+    ///
+    /// # Arguments
+    ///
+    /// # Returns
+    /// `Result<ScalarField<f64>, anyhow::Error>`
+    ///
+    /// # Errors
+    /// - `CoordinateTriplet::new()` fails
+    fn setup() -> Result<ScalarField<f64>, anyhow::Error> {
+        // size of data for testing
+        let cells = CoordinateTriplet::new(2,4,6,)?;
+        
+        // scalar field for testing
+        let scalar_field: Result<ScalarField<f64>, anyhow::Error> = ScalarField::new(&cells);
+        
+        scalar_field
+    }
     
+    /// tests `ScalarField::new()` for success
+    ///
+    /// # Errors
+    /// - `ScalarField::new()` fails for f64
+    /// - `ScalarField::new()` fails for u64
+    ///
+    #[test]
+    fn new_success() {
+        // setup
+        let cells = CoordinateTriplet::new(2,4,6,).unwrap();
+        let scalar_field_f64: Result<ScalarField<f64>, anyhow::Error> = ScalarField::new(&cells);
+        let scalar_field_u64: Result<ScalarField<u64>, anyhow::Error> = ScalarField::new(&cells);
+        
+        // assertions
+        assert!(scalar_field_f64.is_ok());
+        assert!(scalar_field_u64.is_ok())
+    }
+
+    /// tests `ScalarField::new()` for correct setting of `cells` member
+    ///
+    /// # Errors
+    /// - `ScalarField::new()` sets incorrect `ScalarField.cells`
+    ///
+    #[test]
+    fn new_correct_cells() {
+        // setup
+        let scalar_field: ScalarField<f64> = setup().unwrap();
+        
+        // assertions
+        assert_eq!(scalar_field.cells, CoordinateTriplet::new(2,4, 6,).unwrap());
+    }
+
+    /// tests `ScalarField::new()` for correct setting of `r_offset` member
+    ///
+    /// # Errors
+    /// - `ScalarField::new()` sets incorrect `ScalarField.r_offset`
+    ///
+    #[test]
+    fn new_correct_r_offset() {
+        // setup
+        let scalar_field: ScalarField<f64> = setup().unwrap();
+        
+        // assertions
+        assert_eq!(scalar_field.r_offset, 2);
+    }
+
+    /// tests `ScalarField::new()` for correct setting of `p_offset` member
+    ///
+    /// # Errors
+    /// - `ScalarField::new()` sets incorrect `ScalarField.p_offset`
+    ///
+    #[test]
+    fn new_correct_p_offset() {
+        // setup
+        let scalar_field: ScalarField<f64> = setup().unwrap();
+        
+        // assertions
+        assert_eq!(scalar_field.p_offset, 8);
+    }
+
+    /// tests `ScalarField::new()` for correct setting of `data` member
+    ///
+    /// # Errors
+    /// - `ScalarField::new()` sets incorrect `ScalarField.data`
+    ///
+    #[test]
+    fn new_correct_data() {
+        // setup
+        let scalar_field: ScalarField<f64> = setup().unwrap();
+        
+        // assertions
+        assert_eq!(scalar_field.data.len(), 48);
+        for elem in scalar_field.data {
+            assert_eq!(elem, 0.0);
+        }
+    }
+
+    /// tests `ScalarField::iter()` for correctness
+    ///
+    /// # Errors
+    /// - `ScalarField::iter_mut()` does not implement `Iterator` correctly
+    ///
+    #[test]
+    fn impl_iter() {
+        // setup
+        let scalar_field: ScalarField<f64> = setup().unwrap();
+        
+        // assertions
+        scalar_field.iter().for_each(|num| {assert_eq!(*num, 0.0);});
+    }
+
+    /// tests `ScalarField::iter_mut()` for correctness
+    ///
+    /// # Errors
+    /// - `ScalarField::iter_mut()` does not implement iterator correctly
+    ///
+    #[test]
+    fn impl_iter_mut() {
+        // setup
+        let mut scalar_field: ScalarField<f64> = setup().unwrap();
+        
+        // assertions
+        scalar_field.iter_mut().for_each(|num| {*num += 1.0});
+        scalar_field.iter_mut().for_each(|num| {assert_eq!(*num, 1.0)});
+    }
+
+    /// tests `ScalarField` for correct implementation of `Index`
+    ///
+    /// # Errors
+    /// - `ScalarField` does not implement `Index` correctly
+    ///
+    #[test]
+    fn impl_index() {
+        // setup
+        let scalar_field: ScalarField<f64> = setup().unwrap();
+        
+        // assertions
+        assert_eq!(scalar_field[(0, 0, 0)], 0.0);
+        assert_eq!(scalar_field[(1, 2, 0)], 0.0);
+        assert_eq!(scalar_field[(2, 2, 2)], 0.0);
+        
+    }
+
+    /// tests `ScalarField` for correct implementation of `IndexMut`
+    ///
+    /// # Errors
+    /// - `ScalarField` does not implement `IndexMut` correctly
+    ///
+    #[test]
+    fn impl_index_mut() {
+        // setup
+        let mut scalar_field: ScalarField<f64> = setup().unwrap();
+        scalar_field[(0, 0, 0)] = 10.0;
+        scalar_field[(1, 2, 0)] = 20.0;
+        scalar_field[(2, 2, 2)] = 30.0;
+        
+        // assertions
+        assert_eq!(scalar_field[(0, 0, 0)], 10.0);
+        assert_eq!(scalar_field[(1, 2, 0)], 20.0);
+        assert_eq!(scalar_field[(2, 2, 2)], 30.0);
+    }
+
+    /// tests `ScalarField` for implementation of `Display`
+    ///
+    /// # Errors
+    /// - `ScalarField` does not implement `Display`
+    ///
+    #[test]
+    fn impl_display() {
+        // setup
+        let scalar_field: ScalarField<f64> = setup().unwrap();
+        
+        // assertions
+        // this will fail if Display is not implemented, it is not currently worth checking the output
+        println!("{}", scalar_field);
+    }
+
+    /// tests `ScalarField` for correct implementation of `AddAssign<ScalarField<T>>`
+    ///
+    /// # Errors
+    /// - `ScalarField` does not implement `AddAssign<ScalarField<T>>` correctly
+    /// - `ScalarField` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField::iter()` does not implement `Iterator` correctly
+    ///
+    #[test]
+    fn impl_add_assign_scalar_field() {
+        // setup
+        let mut scalar_field1: ScalarField<f64> = setup().unwrap();
+        scalar_field1 += 1.0;
+        
+        let mut scalar_field2: ScalarField<f64> = setup().unwrap();
+        scalar_field2 += 2.0;
+        
+        scalar_field1 += scalar_field2;
+        
+        // assertions
+        scalar_field1.iter().for_each(|num| {assert_eq!(*num, 3.0)});
+    }
+
+    /// tests `ScalarField` for correct implementation of `SubAssign<ScalarField<T>>`
+    ///
+    /// # Errors
+    /// - `ScalarField` does not implement `SubAssign<ScalarField<T>>` correctly
+    /// - `ScalarField` does not implement `SubAssign<T>` correctly
+    /// - `ScalarField::iter()` does not implement `Iterator` correctly
+    ///
+    #[test]
+    fn impl_sub_assign_scalar_field() {
+        // setup
+        let mut scalar_field1: ScalarField<f64> = setup().unwrap();
+        scalar_field1 -= 1.0;
+        
+        let mut scalar_field2: ScalarField<f64> = setup().unwrap();
+        scalar_field2 -= 2.0;
+        
+        scalar_field1 -= scalar_field2;
+        
+        // assertions
+        scalar_field1.iter().for_each(|num| {assert_eq!(*num, 1.0)});
+    }
+
+    /// tests `ScalarField` for correct implementation of `MulAssign<ScalarField<T>>`
+    ///
+    /// # Errors
+    /// - `ScalarField` does not implement `MulAssign<ScalarField<T>>` correctly
+    /// - `ScalarField` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField::iter()` does not implement `Iterator` correctly
+    ///
+    #[test]
+    fn impl_mul_assign_scalar_field() {
+        // setup
+        let mut scalar_field1: ScalarField<f64> = setup().unwrap();
+        scalar_field1 += 1.0;
+        
+        let mut scalar_field2: ScalarField<f64> = setup().unwrap();
+        scalar_field2 += 2.0;
+        
+        scalar_field1 *= scalar_field2;
+        
+        // assertions
+        scalar_field1.iter().for_each(|num| {assert_eq!(*num, 2.0)});
+    }
+
+    /// tests `ScalarField` for correct implementation of `DivAssign<ScalarField<T>>`
+    ///
+    /// # Errors
+    /// - `ScalarField` does not implement `DivAssign<ScalarField<T>>` correctly
+    /// - `ScalarField` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField::iter()` does not implement `Iterator` correctly
+    ///
+    #[test]
+    fn impl_div_assign_scalar_field() {
+        // setup
+        let mut scalar_field1: ScalarField<f64> = setup().unwrap();
+        scalar_field1 += 1.0;
+        
+        let mut scalar_field2: ScalarField<f64> = setup().unwrap();
+        scalar_field2 += 2.0;
+        
+        scalar_field1 /= scalar_field2;
+        
+        // assertions
+        scalar_field1.iter().for_each(|num| {assert_eq!(*num, 0.5)});
+    }
+
+    /// tests `ScalarField` for correct implementation of `AddAssign<T>`
+    ///
+    /// # Errors
+    /// - `ScalarField` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField::iter()` does not implement `Iterator` correctly
+    ///
+    #[test]
+    fn impl_add_assign_t() {
+        // setup
+        let mut scalar_field: ScalarField<f64> = setup().unwrap();
+        scalar_field += 1.0;
+        
+        // assertions
+        scalar_field.iter().for_each(|num| {assert_eq!(*num, 1.0)});
+    }
+
+    /// tests `ScalarField` for correct implementation of `SubAssign<T>`
+    ///
+    /// # Errors
+    /// - `ScalarField` does not implement `SubAssign<T>` correctly
+    /// - `ScalarField` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField::iter()` does not implement `Iterator` correctly
+    ///
+    #[test]
+    fn impl_sub_assign_t() {
+        // setup
+        let mut scalar_field: ScalarField<f64> = setup().unwrap();
+        scalar_field += 10.0;
+        scalar_field -= 5.0;
+        
+        // assertions
+        scalar_field.iter().for_each(|num| {assert_eq!(*num, 5.0)});
+    }
+
+    /// tests `ScalarField` for correct implementation of `MulAssign<T>`
+    ///
+    /// # Errors
+    /// - `ScalarField` does not implement `MulAssign<T>` correctly
+    /// - `ScalarField` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField::iter()` does not implement `Iterator` correctly
+    ///
+    #[test]
+    fn impl_mul_assign_t() {
+        // setup
+        let mut scalar_field: ScalarField<f64> = setup().unwrap();
+        scalar_field += 10.0;
+        scalar_field *= 5.0;
+        
+        // assertions
+        scalar_field.iter().for_each(|num| {assert_eq!(*num, 50.0)});
+    }
+
+    /// tests `ScalarField` for correct implementation of `DivAssign<T>`
+    ///
+    /// # Errors
+    /// - `ScalarField` does not implement `DivAssign<T>` correctly
+    /// - `ScalarField` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField::iter()` does not implement `Iterator` correctly
+    ///
+    #[test]
+    fn impl_div_assign_t() {
+        // setup
+        let mut scalar_field: ScalarField<f64> = setup().unwrap();
+        scalar_field += 10.0;
+        scalar_field /= 5.0;
+        
+        // assertions
+        scalar_field.iter().for_each(|num| {assert_eq!(*num, 2.0)});
+    }
+
+
 }
