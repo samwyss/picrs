@@ -6,7 +6,7 @@ use std::ops::{Add, AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign}
 /// `ScalarField<T>` struct
 ///
 /// describes a scalar field
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct ScalarField<T> {
     /// scalar field data
     data: Vec<T>,
@@ -333,7 +333,7 @@ mod tests {
 
         scalar_field
     }
-    
+
     /// tests `ScalarField::new()` for success
     ///
     /// # Errors
