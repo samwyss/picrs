@@ -72,7 +72,7 @@ mod tests {
     /// tests `World::new()` for success
     ///
     /// # Errors
-    /// - `world::new()` fails for valid input
+    /// - `World::new()` fails for valid input
     ///
     #[test]
     fn new_success() {
@@ -82,9 +82,9 @@ mod tests {
     /// tests `World::new()` for correct setting of size member
     ///
     /// # Errors
-    /// - `world::new()` sets incorrect `world.size.x`
-    /// - `world::new()` sets incorrect `world.size.y`
-    /// - `world::new()` sets incorrect `world.size.z`
+    /// - `World::new()` sets incorrect `world.size.x`
+    /// - `World::new()` sets incorrect `world.size.y`
+    /// - `World::new()` sets incorrect `world.size.z`
     ///
     #[test]
     fn new_correct_size() {
@@ -100,9 +100,9 @@ mod tests {
     /// tests `World::new()` for correct setting of cells member
     ///
     /// # Errors
-    /// - `world::new()` sets incorrect `world.cells.x`
-    /// - `world::new()` sets incorrect `world.cells.y`
-    /// - `world::new()` sets incorrect `world.cells.z`
+    /// - `World::new()` sets incorrect `world.cells.x`
+    /// - `World::new()` sets incorrect `world.cells.y`
+    /// - `World::new()` sets incorrect `world.cells.z`
     ///
     #[test]
     fn new_correct_cells() {
@@ -118,9 +118,9 @@ mod tests {
     /// tests `World::new()` for correct setting of delta member
     ///
     /// # Errors
-    /// - `world::new()` sets incorrect `world.delta.x`
-    /// - `world::new()` sets incorrect `world.delta.y`
-    /// - `world::new()` sets incorrect `world.delta.z`
+    /// - `World::new()` sets incorrect `world.delta.x`
+    /// - `World::new()` sets incorrect `world.delta.y`
+    /// - `World::new()` sets incorrect `world.delta.z`
     ///
     #[test]
     fn new_correct_delta() {
