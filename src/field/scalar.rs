@@ -64,7 +64,7 @@ impl<T: Num + Copy> ScalarField<T> {
     pub fn iter<'a>(&'a self) -> impl Iterator<Item = &'a T> + 'a {
         self.data.iter()
     }
-    
+
     /// returns a mutable iterator over `ScalarField<T>`
     ///
     /// # Arguments
@@ -83,7 +83,7 @@ impl<T: Num + Copy> ScalarField<T> {
 /// implements [] operator on `ScalarField<T>`
 impl<T> Index<(usize, usize, usize)> for ScalarField<T> {
     type Output = T;
-    
+
     /// returns a reference to scalar field data stored at desired index
     ///
     /// # Arguments
@@ -98,7 +98,7 @@ impl<T> Index<(usize, usize, usize)> for ScalarField<T> {
     fn index(&self, idx: (usize, usize, usize)) -> &Self::Output {
         // destructure idx into i, j, and k components
         let (i, j, k) = idx;
-        
+
         // linearly index into `ScalarField` using column major ordering
         &self.data[i + self.r_offset * j + self.p_offset * k]
     }
@@ -120,7 +120,7 @@ impl<T> IndexMut<(usize, usize, usize)> for ScalarField<T> {
     fn index_mut(&mut self, index: (usize, usize, usize)) -> &mut Self::Output {
         // destructure idx into i, j, and k components
         let (i, j, k) = index;
-        
+
         // linearly index into `ScalarField` using column major ordering
         &mut self.data[i + self.r_offset * j + self.p_offset * k]
     }
@@ -128,7 +128,7 @@ impl<T> IndexMut<(usize, usize, usize)> for ScalarField<T> {
 
 /// allows `ScalarField<T>` to be written in a text format
 impl<T: Display> Display for ScalarField<T> {
-    /// writes `ScalarField` in a text format
+    /// writes `ScalarField<T>` in a text format
     ///
     /// # Arguments
     /// - `&self` reference to self
