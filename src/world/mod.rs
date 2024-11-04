@@ -52,10 +52,17 @@ impl World {
 
 #[cfg(test)]
 mod tests {
-    use std::any::Any;
-    use crate::helpers::coordinate_triplet::CoordinateTriplet;
     use crate::world::World;
 
+    /// helper function that sets up a `World` for testing
+    ///
+    /// # Arguments
+    ///
+    /// # Returns
+    /// `Result<World, anyhow::Error>`
+    ///
+    /// # Errors
+    ///
     fn setup() -> Result<World, anyhow::Error> {
         let size: [f64; 3] = [1.0, 2.0, 3.0];
         let cells: [u64; 3] = [3, 11, 31];
