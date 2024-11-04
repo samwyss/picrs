@@ -14,6 +14,8 @@ use picrs::model::Model;
 ///
 /// # Errors
 fn main() -> Result<(), anyhow::Error> {
+    // todo take io prefix from command line
+    
     // todo create configuration from disk somehow
 
     // construct model
@@ -21,8 +23,6 @@ fn main() -> Result<(), anyhow::Error> {
 
     // run model
     model.run()?;
-
-    println!("Hello, world!");
 
     Ok(())
 }
