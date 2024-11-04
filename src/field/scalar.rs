@@ -158,9 +158,9 @@ impl<T: Display> Display for ScalarField<T> {
     }
 }
 
-/// implements ScalarField<T> += ScalarField<T>
+/// implements `ScalarField<T> += ScalarField<T>`
 impl<T: Copy + AddAssign> AddAssign<ScalarField<T>> for ScalarField<T> {
-    /// implements ScalarField<T> += ScalarField<T>
+    /// implements `ScalarField<T> += ScalarField<T>`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
@@ -177,9 +177,9 @@ impl<T: Copy + AddAssign> AddAssign<ScalarField<T>> for ScalarField<T> {
     }
 }
 
-/// implements ScalarField<T> -= ScalarField<T>
+/// implements `ScalarField<T> -= ScalarField<T>`
 impl<T: Copy + SubAssign> SubAssign<ScalarField<T>> for ScalarField<T> {
-    /// implements ScalarField<T> -= ScalarField<T>
+    /// implements `ScalarField<T> -= ScalarField<T>`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
@@ -196,9 +196,9 @@ impl<T: Copy + SubAssign> SubAssign<ScalarField<T>> for ScalarField<T> {
     }
 }
 
-/// implements ScalarField<T> *= ScalarField<T>
+/// implements `ScalarField<T> *= ScalarField<T>`
 impl<T: Copy + MulAssign> MulAssign<ScalarField<T>> for ScalarField<T> {
-    /// implements ScalarField<T> *= ScalarField<T>
+    /// implements `ScalarField<T> *= ScalarField<T>`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
@@ -215,9 +215,9 @@ impl<T: Copy + MulAssign> MulAssign<ScalarField<T>> for ScalarField<T> {
     }
 }
 
-/// implements ScalarField<T> /= ScalarField<T>
+/// implements `ScalarField<T> /= ScalarField<T>`
 impl<T: Copy + DivAssign> DivAssign<ScalarField<T>> for ScalarField<T> {
-    /// implements ScalarField<T> /= ScalarField<T>
+    /// implements `ScalarField<T> /= ScalarField<T>`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
@@ -234,9 +234,9 @@ impl<T: Copy + DivAssign> DivAssign<ScalarField<T>> for ScalarField<T> {
     }
 }
 
-/// implements ScalarField<T> += T
+/// implements `ScalarField<T> += T`
 impl<T: Copy + AddAssign> AddAssign<T> for ScalarField<T> {
-    /// implements ScalarField<T> += T
+    /// implements `ScalarField<T> += T`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
@@ -253,9 +253,9 @@ impl<T: Copy + AddAssign> AddAssign<T> for ScalarField<T> {
     }
 }
 
-/// implements ScalarField<T> -= T
+/// implements `ScalarField<T> -= T`
 impl<T: Copy + SubAssign> SubAssign<T> for ScalarField<T> {
-    /// implements ScalarField<T> -= T
+    /// implements `ScalarField<T> -= T`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
@@ -272,9 +272,9 @@ impl<T: Copy + SubAssign> SubAssign<T> for ScalarField<T> {
     }
 }
 
-/// implements ScalarField<T> *= T
+/// implements `ScalarField<T> *= T`
 impl<T: Copy + MulAssign> MulAssign<T> for ScalarField<T> {
-    /// implements ScalarField<T> *= T
+    /// implements `ScalarField<T> *= T`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
@@ -291,9 +291,9 @@ impl<T: Copy + MulAssign> MulAssign<T> for ScalarField<T> {
     }
 }
 
-/// implements ScalarField<T> /= T
+/// implements `ScalarField<T> /= T`
 impl<T: Copy + DivAssign> DivAssign<T> for ScalarField<T> {
-    /// implements ScalarField<T> /= T
+    /// implements `ScalarField<T> /= T`
     ///
     /// # Arguments
     /// - `&mut self` mutable reference to self
