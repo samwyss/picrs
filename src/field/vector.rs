@@ -2,7 +2,7 @@ use crate::field::scalar::ScalarField;
 use crate::helpers::coordinate_triplet::CoordinateTriplet;
 use num::Num;
 use std::fmt::{Display, Formatter};
-use std::ops::{AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
+use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 
 /// `VectorField<T>` struct
 ///
@@ -475,7 +475,8 @@ mod tests {
         // setup
         let cells = CoordinateTriplet::new(2, 4, 6).unwrap();
         let vector_field_f64: Result<VectorField<f64>, anyhow::Error> = VectorField::new(&cells);
-        let vector_field_usize: Result<VectorField<usize>, anyhow::Error> = VectorField::new(&cells);
+        let vector_field_usize: Result<VectorField<usize>, anyhow::Error> =
+            VectorField::new(&cells);
 
         // assertions
         assert!(vector_field_f64.is_ok());
@@ -734,7 +735,7 @@ mod tests {
         vector_field.y.iter().for_each(|num| assert_eq!(*num, 2.0));
         vector_field.z.iter().for_each(|num| assert_eq!(*num, 2.0));
     }
-    
+
     /// tests VectorField<T>` for correct implementation of `AddAssign<ScalarField<T>>`
     ///
     /// # Errors
@@ -752,13 +753,13 @@ mod tests {
         vector_field += 1.0;
         scalar_field += 2.0;
         vector_field += scalar_field;
-        
+
         // assertions
         vector_field.x.iter().for_each(|num| assert_eq!(*num, 3.0));
         vector_field.y.iter().for_each(|num| assert_eq!(*num, 3.0));
         vector_field.z.iter().for_each(|num| assert_eq!(*num, 3.0));
     }
-    
+
     /// tests `VectorField<T>` for correct implementation of `SubAssign<ScalarField<T>>`
     ///
     /// # Errors
@@ -776,13 +777,13 @@ mod tests {
         vector_field -= 10.0;
         scalar_field -= 2.0;
         vector_field -= scalar_field;
-        
+
         // assertions
         vector_field.x.iter().for_each(|num| assert_eq!(*num, -8.0));
         vector_field.y.iter().for_each(|num| assert_eq!(*num, -8.0));
         vector_field.z.iter().for_each(|num| assert_eq!(*num, -8.0));
     }
-    
+
     /// tests `VectorField<T>` for correct implementation of `MulAssign<ScalarField<T>>`
     ///
     /// # Errors
@@ -800,13 +801,13 @@ mod tests {
         vector_field += 2.0;
         scalar_field += 10.0;
         vector_field *= scalar_field;
-        
+
         // assertions
         vector_field.x.iter().for_each(|num| assert_eq!(*num, 20.0));
         vector_field.y.iter().for_each(|num| assert_eq!(*num, 20.0));
         vector_field.z.iter().for_each(|num| assert_eq!(*num, 20.0));
     }
-    
+
     /// tests `VectorField<T>` for correct implementation of `DivAssign<ScalarField<T>>`
     ///
     /// # Errors
@@ -824,7 +825,7 @@ mod tests {
         vector_field += 10.0;
         scalar_field += 2.0;
         vector_field /= scalar_field;
-        
+
         // assertions
         vector_field.x.iter().for_each(|num| assert_eq!(*num, 5.0));
         vector_field.y.iter().for_each(|num| assert_eq!(*num, 5.0));
