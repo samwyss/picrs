@@ -1,7 +1,17 @@
 [package]
 name = "picrs"
 version = "0.1.0"
+authors = ["Sam Wyss"]
 edition = "2021"
+rust-version = "1.80.0"
+description = "picrs (Pickers): A High Performance Particle In Cell (PIC) Plasma Physics Model Implemented in Rust"
+readme = "README.md"
+homepage = "https://github.com/samwyss/picrs"
+repository = "https://github.com/samwyss/picrs"
+license = "MIT"
+license-file = "LICENSE"
+keywords = ["Simulation", "Modeling", "Plasma", "Physics", "PIC"]
+categories = ["aerospace::simulation", "command-line-utilities", "mathematics", "science", "simulation"]
 
 [[bin]]
 name = "driver"
@@ -12,9 +22,14 @@ name = "picrs"
 path = "src/lib.rs"
 
 [profile.release]
-codegen-units = 1
+opt-level = 3
+debug = false
+strip = "symbols"
+debug-assertions = false
+overflow-checks = false
 lto = "fat"
 panic = "abort"
+codegen-units = 1
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
