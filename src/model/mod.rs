@@ -2,14 +2,15 @@
 //!
 //! describes a model facade struct for using picrs
 
-use crate::field::scalar::ScalarField;
-use crate::field::vector::VectorField;
-use crate::helpers::coordinate_triplet::CoordinateTriplet;
+use crate::world::World;
 
 /// `Model` struct
 ///
 /// provides a facade for using picrs
-pub struct Model {}
+pub struct Model {
+    // world simulation object
+    world: World,
+}
 
 impl Model {
     /// `Model` constructor
@@ -22,7 +23,14 @@ impl Model {
     /// # Errors
     ///
     pub fn new() -> Result<Model, anyhow::Error> {
-        Ok(Model {})
+        // todo read in from input deck
+        let size: [f64; 3] = [1.0, 1.0, 1.0];
+        let cells: [usize; 3] = [10, 10, 10];
+
+        // construct world
+        let world = World::new(&size, &cells)?;
+
+        Ok(Model { world })
     }
 
     /// runs configured `Model`
@@ -36,29 +44,9 @@ impl Model {
     /// # Errors
     ///
     pub fn run(&mut self) -> Result<(), anyhow::Error> {
-        let coordinates: CoordinateTriplet<usize> = CoordinateTriplet::new(3, 3, 3)?;
-
-        let mut vfield: VectorField<f64> = VectorField::new(&coordinates)?;
-        let mut sfield: ScalarField<f64> = ScalarField::new(&coordinates)?;
-        
-        sfield += 10.0;
-        sfield *= 2.0;
-        sfield -= 5.0;
-        sfield /= 5.0;
-        
-        vfield += 10.0;
-        vfield *= 2.0;
-        vfield -= 5.0;
-        vfield /= 5.0;
-
-        println!("{}", sfield);
-        println!("{}", vfield);
-
         Ok(())
     }
 }
 
 #[cfg(test)]
-mod tests {
-    
-}
+mod tests {}
