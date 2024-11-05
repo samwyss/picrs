@@ -99,7 +99,7 @@ impl<T> Index<(usize, usize, usize)> for ScalarField<T> {
         // destructure idx into i, j, and k components
         let (i, j, k) = idx;
 
-        // linearly index into `ScalarField` using column major ordering
+        // linearly index into `ScalarField<T>` using column major ordering
         &self.data[i + self.r_offset * j + self.p_offset * k]
     }
 }
@@ -121,7 +121,7 @@ impl<T> IndexMut<(usize, usize, usize)> for ScalarField<T> {
         // destructure idx into i, j, and k components
         let (i, j, k) = index;
 
-        // linearly index into `ScalarField` using column major ordering
+        // linearly index into `ScalarField<T>` using column major ordering
         &mut self.data[i + self.r_offset * j + self.p_offset * k]
     }
 }
@@ -450,7 +450,7 @@ mod tests {
     /// tests `ScalarField` for correct implementation of `Index`
     ///
     /// # Errors
-    /// - `ScalarField` does not implement `Index` correctly
+    /// - `ScalarField<T>` does not implement `Index` correctly
     ///
     #[test]
     fn impl_index() {
@@ -463,10 +463,10 @@ mod tests {
         assert_eq!(scalar_field[(2, 2, 2)], 0.0);
     }
 
-    /// tests `ScalarField` for correct implementation of `IndexMut`
+    /// tests `ScalarField<T>` for correct implementation of `IndexMut`
     ///
     /// # Errors
-    /// - `ScalarField` does not implement `IndexMut` correctly
+    /// - `ScalarField<T>` does not implement `IndexMut` correctly
     ///
     #[test]
     fn impl_index_mut() {
@@ -482,10 +482,10 @@ mod tests {
         assert_eq!(scalar_field[(2, 2, 2)], 30.0);
     }
 
-    /// tests `ScalarField` for implementation of `Display`
+    /// tests `ScalarField<T>` for implementation of `Display`
     ///
     /// # Errors
-    /// - `ScalarField` does not implement `Display`
+    /// - `ScalarField<T>` does not implement `Display`
     ///
     #[test]
     fn impl_display() {
@@ -497,11 +497,11 @@ mod tests {
         println!("{}", scalar_field);
     }
 
-    /// tests `ScalarField` for correct implementation of `AddAssign<ScalarField<T>>`
+    /// tests `ScalarField<T>` for correct implementation of `AddAssign<ScalarField<T>>`
     ///
     /// # Errors
-    /// - `ScalarField` does not implement `AddAssign<ScalarField<T>>` correctly
-    /// - `ScalarField` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField<T>` does not implement `AddAssign<ScalarField<T>>` correctly
+    /// - `ScalarField<T>` does not implement `AddAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
@@ -519,11 +519,11 @@ mod tests {
         scalar_field1.iter().for_each(|num| assert_eq!(*num, 3.0));
     }
 
-    /// tests `ScalarField` for correct implementation of `SubAssign<ScalarField<T>>`
+    /// tests `ScalarField<T>` for correct implementation of `SubAssign<ScalarField<T>>`
     ///
     /// # Errors
-    /// - `ScalarField` does not implement `SubAssign<ScalarField<T>>` correctly
-    /// - `ScalarField` does not implement `SubAssign<T>` correctly
+    /// - `ScalarField<T>` does not implement `SubAssign<ScalarField<T>>` correctly
+    /// - `ScalarField<T>` does not implement `SubAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
@@ -541,11 +541,11 @@ mod tests {
         scalar_field1.iter().for_each(|num| assert_eq!(*num, 1.0));
     }
 
-    /// tests `ScalarField` for correct implementation of `MulAssign<ScalarField<T>>`
+    /// tests `ScalarField<T>` for correct implementation of `MulAssign<ScalarField<T>>`
     ///
     /// # Errors
-    /// - `ScalarField` does not implement `MulAssign<ScalarField<T>>` correctly
-    /// - `ScalarField` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField<T>` does not implement `MulAssign<ScalarField<T>>` correctly
+    /// - `ScalarField<T>` does not implement `AddAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
@@ -563,11 +563,11 @@ mod tests {
         scalar_field1.iter().for_each(|num| assert_eq!(*num, 2.0));
     }
 
-    /// tests `ScalarField` for correct implementation of `DivAssign<ScalarField<T>>`
+    /// tests `ScalarField<T>` for correct implementation of `DivAssign<ScalarField<T>>`
     ///
     /// # Errors
-    /// - `ScalarField` does not implement `DivAssign<ScalarField<T>>` correctly
-    /// - `ScalarField` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField<T>` does not implement `DivAssign<ScalarField<T>>` correctly
+    /// - `ScalarField<T>` does not implement `AddAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
@@ -585,10 +585,10 @@ mod tests {
         scalar_field1.iter().for_each(|num| assert_eq!(*num, 0.5));
     }
 
-    /// tests `ScalarField` for correct implementation of `AddAssign<T>`
+    /// tests `ScalarField<T>` for correct implementation of `AddAssign<T>`
     ///
     /// # Errors
-    /// - `ScalarField` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField<T>` does not implement `AddAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
@@ -601,11 +601,11 @@ mod tests {
         scalar_field.iter().for_each(|num| assert_eq!(*num, 1.0));
     }
 
-    /// tests `ScalarField` for correct implementation of `SubAssign<T>`
+    /// tests `ScalarField<T>` for correct implementation of `SubAssign<T>`
     ///
     /// # Errors
-    /// - `ScalarField` does not implement `SubAssign<T>` correctly
-    /// - `ScalarField` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField<T>` does not implement `SubAssign<T>` correctly
+    /// - `ScalarField<T>` does not implement `AddAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
@@ -619,11 +619,11 @@ mod tests {
         scalar_field.iter().for_each(|num| assert_eq!(*num, 5.0));
     }
 
-    /// tests `ScalarField` for correct implementation of `MulAssign<T>`
+    /// tests `ScalarField<T>` for correct implementation of `MulAssign<T>`
     ///
     /// # Errors
-    /// - `ScalarField` does not implement `MulAssign<T>` correctly
-    /// - `ScalarField` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField<T>` does not implement `MulAssign<T>` correctly
+    /// - `ScalarField<T>` does not implement `AddAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
@@ -637,11 +637,11 @@ mod tests {
         scalar_field.iter().for_each(|num| assert_eq!(*num, 50.0));
     }
 
-    /// tests `ScalarField` for correct implementation of `DivAssign<T>`
+    /// tests `ScalarField<T>` for correct implementation of `DivAssign<T>`
     ///
     /// # Errors
-    /// - `ScalarField` does not implement `DivAssign<T>` correctly
-    /// - `ScalarField` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField<T>` does not implement `DivAssign<T>` correctly
+    /// - `ScalarField<T>` does not implement `AddAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
