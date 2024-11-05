@@ -319,6 +319,126 @@ impl<T: Copy + DivAssign + Num> DivAssign<T> for VectorField<T> {
     }
 }
 
+/// implements `VectorField<T> += ScalarField<T>`
+impl<T: Copy + AddAssign + Num> AddAssign<ScalarField<T>> for VectorField<T> {
+    /// implements `VectorField<T> += ScalarField<T>`
+    ///
+    /// # Arguments
+    /// - `&mut self` mutable reference to self
+    /// - `rhs: ScalarField<T>` rhs of operation
+    ///
+    /// # Returns
+    ///
+    /// # Errors
+    ///
+    fn add_assign(&mut self, rhs: ScalarField<T>) {
+        // x component
+        for (elem, num) in self.x.iter_mut().zip(rhs.iter()) {
+            *elem += *num;
+        }
+
+        // y component
+        for (elem, num) in self.y.iter_mut().zip(rhs.iter()) {
+            *elem += *num;
+        }
+
+        // z component
+        for (elem, num) in self.z.iter_mut().zip(rhs.iter()) {
+            *elem += *num;
+        }
+    }
+}
+
+/// implements `VectorField<T> -= ScalarField<T>`
+impl<T: Copy + SubAssign + Num> SubAssign<ScalarField<T>> for VectorField<T> {
+    /// implements `VectorField<T> -= ScalarField<T>`
+    ///
+    /// # Arguments
+    /// - `&mut self` mutable reference to self
+    /// - `rhs: ScalarField<T>` rhs of operation
+    ///
+    /// # Returns
+    ///
+    /// # Errors
+    ///
+    fn sub_assign(&mut self, rhs: ScalarField<T>) {
+        // x component
+        for (elem, num) in self.x.iter_mut().zip(rhs.iter()) {
+            *elem -= *num;
+        }
+
+        // y component
+        for (elem, num) in self.y.iter_mut().zip(rhs.iter()) {
+            *elem -= *num;
+        }
+
+        // z component
+        for (elem, num) in self.z.iter_mut().zip(rhs.iter()) {
+            *elem -= *num;
+        }
+    }
+}
+
+/// implements `VectorField<T> *= ScalarField<T>`
+impl<T: Copy + MulAssign + Num> MulAssign<ScalarField<T>> for VectorField<T> {
+    /// implements `VectorField<T> *= ScalarField<T>`
+    ///
+    /// # Arguments
+    /// - `&mut self` mutable reference to self
+    /// - `rhs: ScalarField<T>` rhs of operation
+    ///
+    /// # Returns
+    ///
+    /// # Errors
+    ///
+    fn mul_assign(&mut self, rhs: ScalarField<T>) {
+        // x component
+        for (elem, num) in self.x.iter_mut().zip(rhs.iter()) {
+            *elem *= *num;
+        }
+
+        // y component
+        for (elem, num) in self.y.iter_mut().zip(rhs.iter()) {
+            *elem *= *num;
+        }
+
+        // z component
+        for (elem, num) in self.z.iter_mut().zip(rhs.iter()) {
+            *elem *= *num;
+        }
+    }
+}
+
+/// implements `VectorField<T> /= ScalarField<T>`
+impl<T: Copy + DivAssign + Num> DivAssign<ScalarField<T>> for VectorField<T> {
+    /// implements `VectorField<T> /= ScalarField<T>`
+    ///
+    /// # Arguments
+    /// - `&mut self` mutable reference to self
+    /// - `rhs: ScalarField<T>` rhs of operation
+    ///
+    /// # Returns
+    ///
+    /// # Errors
+    ///
+    fn div_assign(&mut self, rhs: ScalarField<T>) {
+        // x component
+        for (elem, num) in self.x.iter_mut().zip(rhs.iter()) {
+            *elem /= *num;
+        }
+
+        // y component
+        for (elem, num) in self.y.iter_mut().zip(rhs.iter()) {
+            *elem /= *num;
+        }
+
+        // z component
+        for (elem, num) in self.z.iter_mut().zip(rhs.iter()) {
+            *elem /= *num;
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::field::scalar::ScalarField;
@@ -449,7 +569,7 @@ mod tests {
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
-    fn impl_add_assign_scalar_field() {
+    fn impl_add_assign_vector_field() {
         // setup
         let mut vector_field1: VectorField<f64> = setup().unwrap();
         vector_field1 += 1.0;
@@ -473,7 +593,7 @@ mod tests {
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
-    fn impl_sub_assign_scalar_field() {
+    fn impl_sub_assign_vector_field() {
         // setup
         let mut vector_field1: VectorField<f64> = setup().unwrap();
         vector_field1 -= 1.0;
@@ -497,7 +617,7 @@ mod tests {
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
-    fn impl_mul_assign_scalar_field() {
+    fn impl_mul_assign_vector_field() {
         // setup
         let mut vector_field1: VectorField<f64> = setup().unwrap();
         vector_field1 += 1.0;
@@ -521,7 +641,7 @@ mod tests {
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
-    fn impl_div_assign_scalar_field() {
+    fn impl_div_assign_vector_field() {
         // setup
         let mut vector_field1: VectorField<f64> = setup().unwrap();
         vector_field1 += 1.0;
@@ -613,5 +733,101 @@ mod tests {
         vector_field.x.iter().for_each(|num| assert_eq!(*num, 2.0));
         vector_field.y.iter().for_each(|num| assert_eq!(*num, 2.0));
         vector_field.z.iter().for_each(|num| assert_eq!(*num, 2.0));
+    }
+    
+    /// tests `VectorField<T>` for correct implementation of `AddAssign<ScalarField<T>>`
+    ///
+    /// # Errors
+    /// - `VectorField<T>` does not implement `AddAssign<ScalarField<T>>` correctly
+    /// - `VectorField<T>` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField<T>` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField::iter()` does not implement `Iterator` correctly
+    ///
+    #[test]
+    fn impl_add_assign_scalar_field() {
+        // setup
+        let mut vector_field: VectorField<f64> = setup().unwrap();
+        let cells: CoordinateTriplet<usize> = CoordinateTriplet::new(2, 4, 6).unwrap();
+        let mut scalar_field: ScalarField<f64> = ScalarField::new(&cells).unwrap();
+        vector_field += 1.0;
+        scalar_field += 2.0;
+        vector_field += scalar_field;
+        
+        // assertions
+        vector_field.x.iter().for_each(|num| assert_eq!(*num, 3.0));
+        vector_field.y.iter().for_each(|num| assert_eq!(*num, 3.0));
+        vector_field.z.iter().for_each(|num| assert_eq!(*num, 3.0));
+    }
+    
+    /// tests `VectorField<T>` for correct implementation of `SubAssign<ScalarField<T>>`
+    ///
+    /// # Errors
+    /// - `VectorField<T>` does not implement `SubAssign<ScalarField<T>>` correctly
+    /// - `VectorField<T>` does not implement `SubAssign<T>` correctly
+    /// - `ScalarField<T>` does not implement `SubAssign<T>` correctly
+    /// - `ScalarField::iter()` does not implement `Iterator` correctly
+    ///
+    #[test]
+    fn impl_sub_assign_scalar_field() {
+        // setup
+        let mut vector_field: VectorField<f64> = setup().unwrap();
+        let cells: CoordinateTriplet<usize> = CoordinateTriplet::new(2, 4, 6).unwrap();
+        let mut scalar_field: ScalarField<f64> = ScalarField::new(&cells).unwrap();
+        vector_field -= 10.0;
+        scalar_field -= 2.0;
+        vector_field -= scalar_field;
+        
+        // assertions
+        vector_field.x.iter().for_each(|num| assert_eq!(*num, -8.0));
+        vector_field.y.iter().for_each(|num| assert_eq!(*num, -8.0));
+        vector_field.z.iter().for_each(|num| assert_eq!(*num, -8.0));
+    }
+    
+    /// tests `VectorField<T>` for correct implementation of `MulAssign<ScalarField<T>>`
+    ///
+    /// # Errors
+    /// - `VectorField<T>` does not implement `MulAssign<ScalarField<T>>` correctly
+    /// - `VectorField<T>` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField<T>` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField::iter()` does not implement `Iterator` correctly
+    ///
+    #[test]
+    fn impl_mul_assign_scalar_field() {
+        // setup
+        let mut vector_field: VectorField<f64> = setup().unwrap();
+        let cells: CoordinateTriplet<usize> = CoordinateTriplet::new(2, 4, 6).unwrap();
+        let mut scalar_field: ScalarField<f64> = ScalarField::new(&cells).unwrap();
+        vector_field += 2.0;
+        scalar_field += 10.0;
+        vector_field *= scalar_field;
+        
+        // assertions
+        vector_field.x.iter().for_each(|num| assert_eq!(*num, 20.0));
+        vector_field.y.iter().for_each(|num| assert_eq!(*num, 20.0));
+        vector_field.z.iter().for_each(|num| assert_eq!(*num, 20.0));
+    }
+    
+    /// tests `VectorField<T>` for correct implementation of `DivAssign<ScalarField<T>>`
+    ///
+    /// # Errors
+    /// - `VectorField<T>` does not implement `DivAssign<ScalarField<T>>` correctly
+    /// - `VectorField<T>` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField<T>` does not implement `AddAssign<T>` correctly
+    /// - `ScalarField::iter()` does not implement `Iterator` correctly
+    ///
+    #[test]
+    fn impl_div_assign_scalar_field() {
+        // setup
+        let mut vector_field: VectorField<f64> = setup().unwrap();
+        let cells: CoordinateTriplet<usize> = CoordinateTriplet::new(2, 4, 6).unwrap();
+        let mut scalar_field: ScalarField<f64> = ScalarField::new(&cells).unwrap();
+        vector_field += 10.0;
+        scalar_field += 2.0;
+        vector_field /= scalar_field;
+        
+        // assertions
+        vector_field.x.iter().for_each(|num| assert_eq!(*num, 5.0));
+        vector_field.y.iter().for_each(|num| assert_eq!(*num, 5.0));
+        vector_field.z.iter().for_each(|num| assert_eq!(*num, 5.0));
     }
 }
