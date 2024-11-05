@@ -7,7 +7,7 @@ use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 /// `VectorField<T>` struct
 ///
 /// describes a vector field
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct VectorField<T> {
     /// number of cells in vector field
     cells: CoordinateTriplet<usize>,
