@@ -89,6 +89,9 @@ impl World {
 
 #[cfg(test)]
 mod tests {
+    use crate::field::scalar::ScalarField;
+    use crate::field::vector::VectorField;
+    use crate::helpers::coordinate_triplet::CoordinateTriplet;
     use crate::world::World;
 
     /// helper function that sets up a `World` for testing
@@ -170,35 +173,71 @@ mod tests {
         assert_eq!(world.delta.z, 0.1);
     }
 
+    /// tests `World::new()` for correct setting of `World.potential` member
+    ///
+    /// # Errors
+    /// - `World::new()` sets incorrect `World.potential`
+    /// - call to `CoordinateTriplet::new()` fails
+    /// - call to `ScalarField::new()` fails
+    ///
     #[test]
     fn new_correct_potential() {
         // setup
         let world = setup().unwrap();
+        let cells = CoordinateTriplet::new(3, 11, 31).unwrap();
 
         // assertions
+        assert_eq!(world.potential, ScalarField::new(&cells).unwrap())
     }
 
+    /// tests `World::new()` for correct setting of `World.charge_density` member
+    ///
+    /// # Errors
+    /// - `World::new()` sets incorrect `World.charge_density`
+    /// - call to `CoordinateTriplet::new()` fails
+    /// - call to `ScalarField::new()` fails
+    ///
     #[test]
     fn new_correct_charge_density() {
         // setup
         let world = setup().unwrap();
+        let cells = CoordinateTriplet::new(3, 11, 31).unwrap();
 
         // assertions
+        assert_eq!(world.charge_density, ScalarField::new(&cells).unwrap())
     }
 
+    /// tests `World::new()` for correct setting of `World.electric_field` member
+    ///
+    /// # Errors
+    /// - `World::new()` sets incorrect `World.electric_field`
+    /// - call to `CoordinateTriplet::new()` fails
+    /// - call to `VectorField::new()` fails
+    ///
     #[test]
     fn new_correct_electric_field() {
         // setup
         let world = setup().unwrap();
+        let cells = CoordinateTriplet::new(3, 11, 31).unwrap();
 
         // assertions
+        assert_eq!(world.electric_field, VectorField::new(&cells).unwrap())
     }
 
+    /// tests `World::new()` for correct setting of `World.cell_vol` member
+    ///
+    /// # Errors
+    /// - `World::new()` sets incorrect `World.cell_vol`
+    /// - call to `CoordinateTriplet::new()` fails
+    /// - call to `ScalarField::new()` fails
+    ///
     #[test]
     fn new_correct_cell_vol() {
         // setup
         let world = setup().unwrap();
+        let cells = CoordinateTriplet::new(3, 11, 31).unwrap();
 
         // assertions
+        assert_eq!(world.cell_vol, ScalarField::new(&cells).unwrap())
     }
 }
