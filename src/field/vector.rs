@@ -546,10 +546,10 @@ mod tests {
         assert_eq!(vector_field.z, ScalarField::new(&cells).unwrap());
     }
 
-    /// tests `VectorField` for implementation of `Display`
+    /// tests VectorField<T>` for implementation of `Display`
     ///
     /// # Errors
-    /// - `VectorField` does not implement `Display`
+    /// - VectorField<T>` does not implement `Display`
     ///
     #[test]
     fn impl_display() {
@@ -561,11 +561,11 @@ mod tests {
         println!("{}", vector_field);
     }
 
-    /// tests `VectorField` for correct implementation of `AddAssign<VectorField<T>>`
+    /// tests VectorField<T>` for correct implementation of `AddAssign<VectorField<T>>`
     ///
     /// # Errors
-    /// - `VectorField` does not implement `AddAssign<VectorField<T>>` correctly
-    /// - `VectorField` does not implement `AddAssign<T>` correctly
+    /// - VectorField<T>` does not implement `AddAssign<VectorField<T>>` correctly
+    /// - VectorField<T>` does not implement `AddAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
@@ -585,11 +585,11 @@ mod tests {
         vector_field1.z.iter().for_each(|num| assert_eq!(*num, 3.0));
     }
 
-    /// tests `VectorField` for correct implementation of `SubAssign<VectorField<T>>`
+    /// tests VectorField<T>` for correct implementation of `SubAssign<VectorField<T>>`
     ///
     /// # Errors
-    /// - `VectorField` does not implement `SubAssign<ScalarField<T>>` correctly
-    /// - `VectorField` does not implement `SubAssign<T>` correctly
+    /// - VectorField<T>` does not implement `SubAssign<ScalarField<T>>` correctly
+    /// - VectorField<T>` does not implement `SubAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
@@ -609,11 +609,11 @@ mod tests {
         vector_field1.z.iter().for_each(|num| assert_eq!(*num, 1.0));
     }
 
-    /// tests `VectorField` for correct implementation of `MulAssign<VectorField<T>>`
+    /// tests VectorField<T>` for correct implementation of `MulAssign<VectorField<T>>`
     ///
     /// # Errors
-    /// - `VectorField` does not implement `MulAssign<VectorField<T>>` correctly
-    /// - `VectorField` does not implement `AddAssign<T>` correctly
+    /// - VectorField<T>` does not implement `MulAssign<VectorField<T>>` correctly
+    /// - VectorField<T>` does not implement `AddAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
@@ -633,11 +633,11 @@ mod tests {
         vector_field1.z.iter().for_each(|num| assert_eq!(*num, 2.0));
     }
 
-    /// tests `VectorField` for correct implementation of `DivAssign<VectorField<T>>`
+    /// tests VectorField<T>` for correct implementation of `DivAssign<VectorField<T>>`
     ///
     /// # Errors
-    /// - `VectorField` does not implement `DivAssign<VectorField<T>>` correctly
-    /// - `VectorField` does not implement `AddAssign<T>` correctly
+    /// - VectorField<T>` does not implement `DivAssign<VectorField<T>>` correctly
+    /// - VectorField<T>` does not implement `AddAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
@@ -657,10 +657,10 @@ mod tests {
         vector_field1.z.iter().for_each(|num| assert_eq!(*num, 0.5));
     }
 
-    /// tests `VectorField` for correct implementation of `AddAssign<T>`
+    /// tests VectorField<T>` for correct implementation of `AddAssign<T>`
     ///
     /// # Errors
-    /// - `VectorField` does not implement `AddAssign<T>` correctly
+    /// - VectorField<T>` does not implement `AddAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
@@ -675,11 +675,11 @@ mod tests {
         vector_field.z.iter().for_each(|num| assert_eq!(*num, 1.0));
     }
 
-    /// tests `VectorField` for correct implementation of `SubAssign<T>`
+    /// tests VectorField<T>` for correct implementation of `SubAssign<T>`
     ///
     /// # Errors
-    /// - `VectorField` does not implement `SubAssign<T>` correctly
-    /// - `VectorField` does not implement `AddAssign<T>` correctly
+    /// - VectorField<T>` does not implement `SubAssign<T>` correctly
+    /// - VectorField<T>` does not implement `AddAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
@@ -695,11 +695,11 @@ mod tests {
         vector_field.z.iter().for_each(|num| assert_eq!(*num, 5.0));
     }
 
-    /// tests `VectorField` for correct implementation of `MulAssign<T>`
+    /// tests VectorField<T>` for correct implementation of `MulAssign<T>`
     ///
     /// # Errors
-    /// - `VectorField` does not implement `MulAssign<T>` correctly
-    /// - `VectorField` does not implement `AddAssign<T>` correctly
+    /// - VectorField<T>` does not implement `MulAssign<T>` correctly
+    /// - VectorField<T>` does not implement `AddAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
@@ -715,11 +715,11 @@ mod tests {
         vector_field.z.iter().for_each(|num| assert_eq!(*num, 50.0));
     }
 
-    /// tests `VectorField` for correct implementation of `DivAssign<T>`
+    /// tests VectorField<T>` for correct implementation of `DivAssign<T>`
     ///
     /// # Errors
-    /// - `VectorField` does not implement `DivAssign<T>` correctly
-    /// - `VectorField` does not implement `AddAssign<T>` correctly
+    /// - VectorField<T>` does not implement `DivAssign<T>` correctly
+    /// - VectorField<T>` does not implement `AddAssign<T>` correctly
     /// - `ScalarField::iter()` does not implement `Iterator` correctly
     ///
     #[test]
@@ -735,7 +735,7 @@ mod tests {
         vector_field.z.iter().for_each(|num| assert_eq!(*num, 2.0));
     }
     
-    /// tests `VectorField<T>` for correct implementation of `AddAssign<ScalarField<T>>`
+    /// tests VectorField<T>` for correct implementation of `AddAssign<ScalarField<T>>`
     ///
     /// # Errors
     /// - `VectorField<T>` does not implement `AddAssign<ScalarField<T>>` correctly
