@@ -338,18 +338,18 @@ mod tests {
     ///
     /// # Errors
     /// - `ScalarField::new()` fails for f64
-    /// - `ScalarField::new()` fails for u64
+    /// - `ScalarField::new()` fails for usize
     ///
     #[test]
     fn new_success() {
         // setup
         let cells = CoordinateTriplet::new(2, 4, 6).unwrap();
         let scalar_field_f64: Result<ScalarField<f64>, anyhow::Error> = ScalarField::new(&cells);
-        let scalar_field_u64: Result<ScalarField<u64>, anyhow::Error> = ScalarField::new(&cells);
+        let scalar_field_usize: Result<ScalarField<usize>, anyhow::Error> = ScalarField::new(&cells);
 
         // assertions
         assert!(scalar_field_f64.is_ok());
-        assert!(scalar_field_u64.is_ok())
+        assert!(scalar_field_usize.is_ok())
     }
 
     /// tests `ScalarField::new()` for correct setting of `cells` member

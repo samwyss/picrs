@@ -468,18 +468,18 @@ mod tests {
     ///
     /// # Errors
     /// - `VectorField::new()` fails for f64
-    /// - `VectorField::new()` fails for u64
+    /// - `VectorField::new()` fails for usize
     ///
     #[test]
     fn new_success() {
         // setup
         let cells = CoordinateTriplet::new(2, 4, 6).unwrap();
         let vector_field_f64: Result<VectorField<f64>, anyhow::Error> = VectorField::new(&cells);
-        let vector_field_u64: Result<VectorField<u64>, anyhow::Error> = VectorField::new(&cells);
+        let vector_field_usize: Result<VectorField<usize>, anyhow::Error> = VectorField::new(&cells);
 
         // assertions
         assert!(vector_field_f64.is_ok());
-        assert!(vector_field_u64.is_ok())
+        assert!(vector_field_usize.is_ok())
     }
 
     /// tests `VectorField::new()` for correct setting of `cells` member
