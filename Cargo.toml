@@ -9,7 +9,6 @@ readme = "README.md"
 homepage = "https://github.com/samwyss/picrs"
 repository = "https://github.com/samwyss/picrs"
 license = "MIT"
-license-file = "LICENSE"
 keywords = ["Simulation", "Modeling", "Plasma", "Physics", "PIC"]
 categories = ["aerospace::simulation", "command-line-utilities", "mathematics", "science", "simulation"]
 
