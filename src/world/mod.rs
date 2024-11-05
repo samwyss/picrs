@@ -2,13 +2,15 @@
 //!
 //! contents describe world of the simulation domain
 
+use crate::field::scalar::ScalarField;
+use crate::field::vector::VectorField;
 use crate::helpers::coordinate_triplet::CoordinateTriplet;
 
 /// `World` struct
 ///
 /// describes the world of the simulation domain
 #[derive(Debug)]
-struct World {
+pub struct World {
     /// (m) size of bounding box
     size: CoordinateTriplet<f64>,
 
@@ -17,6 +19,18 @@ struct World {
 
     /// (m) spatial increment
     delta: CoordinateTriplet<f64>,
+
+    /// (V) electric field potential
+    potential: ScalarField<f64>,
+
+    /// (c/m^3) electric charge density
+    charge_density: ScalarField<f64>,
+
+    /// (V/m) electric field
+    electric_field: VectorField<f64>,
+
+    /// (m^3) cell volumes
+    cell_vol: ScalarField<f64>,
 }
 
 impl World {
@@ -31,6 +45,8 @@ impl World {
     ///
     /// # Errors
     /// - any call to `CoordinateTriplet::new()` fails
+    /// - any call to `ScalarField::new()` fails
+    /// - any call to `VectorField::new()` fails
     pub fn new(size: &[f64; 3], cells: &[usize; 3]) -> Result<World, anyhow::Error> {
         // unpack dimensions
         let size: CoordinateTriplet<f64> = CoordinateTriplet::new(size[0], size[1], size[2])?;
@@ -46,7 +62,28 @@ impl World {
 
         // todo add assertion that all spacing is less than that of the Debeye length
 
-        Ok(World { size, cells, delta })
+        // initialize electric potential
+        let potential: ScalarField<f64> = ScalarField::new(&cells)?;
+
+        // initialize charge density
+        let charge_density: ScalarField<f64> = ScalarField::new(&cells)?;
+
+        // initialize electric field
+        let electric_field: VectorField<f64> = VectorField::new(&cells)?;
+
+        // initialize cell volumes
+        // todo fill in properly
+        let cell_vol: ScalarField<f64> = ScalarField::new(&cells)?;
+
+        Ok(World {
+            size,
+            cells,
+            delta,
+            potential,
+            charge_density,
+            electric_field,
+            cell_vol,
+        })
     }
 }
 
@@ -79,7 +116,7 @@ mod tests {
         assert!(setup().is_ok());
     }
 
-    /// tests `World::new()` for correct setting of size member
+    /// tests `World::new()` for correct setting of `World.size` member
     ///
     /// # Errors
     /// - `World::new()` sets incorrect `world.size.x`
@@ -88,7 +125,7 @@ mod tests {
     ///
     #[test]
     fn new_correct_size() {
-        // create world for testing
+        // setup
         let world = setup().unwrap();
 
         // assertions
@@ -97,7 +134,7 @@ mod tests {
         assert_eq!(world.size.z, 3.0);
     }
 
-    /// tests `World::new()` for correct setting of cells member
+    /// tests `World::new()` for correct setting of `World.cells' member
     ///
     /// # Errors
     /// - `World::new()` sets incorrect `world.cells.x`
@@ -106,7 +143,7 @@ mod tests {
     ///
     #[test]
     fn new_correct_cells() {
-        // create world for testing
+        // setup
         let world = setup().unwrap();
 
         // assertions
@@ -115,7 +152,7 @@ mod tests {
         assert_eq!(world.cells.z, 31);
     }
 
-    /// tests `World::new()` for correct setting of delta member
+    /// tests `World::new()` for correct setting of `World.delta` member
     ///
     /// # Errors
     /// - `World::new()` sets incorrect `world.delta.x`
@@ -124,12 +161,44 @@ mod tests {
     ///
     #[test]
     fn new_correct_delta() {
-        // create world for testing
+        // setup
         let world = setup().unwrap();
 
         // assertions
         assert_eq!(world.delta.x, 0.5);
         assert_eq!(world.delta.y, 0.2);
         assert_eq!(world.delta.z, 0.1);
+    }
+
+    #[test]
+    fn new_correct_potential() {
+        // setup
+        let world = setup().unwrap();
+
+        // assertions
+    }
+
+    #[test]
+    fn new_correct_charge_density() {
+        // setup
+        let world = setup().unwrap();
+
+        // assertions
+    }
+
+    #[test]
+    fn new_correct_electric_field() {
+        // setup
+        let world = setup().unwrap();
+
+        // assertions
+    }
+
+    #[test]
+    fn new_correct_cell_vol() {
+        // setup
+        let world = setup().unwrap();
+
+        // assertions
     }
 }
