@@ -1,7 +1,7 @@
 use crate::helpers::coordinate_triplet::CoordinateTriplet;
 use num::Num;
 use std::fmt::{Display, Formatter};
-use std::ops::{Add, AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
+use std::ops::{AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
 
 /// `ScalarField<T>` struct
 ///
@@ -345,7 +345,8 @@ mod tests {
         // setup
         let cells = CoordinateTriplet::new(2, 4, 6).unwrap();
         let scalar_field_f64: Result<ScalarField<f64>, anyhow::Error> = ScalarField::new(&cells);
-        let scalar_field_usize: Result<ScalarField<usize>, anyhow::Error> = ScalarField::new(&cells);
+        let scalar_field_usize: Result<ScalarField<usize>, anyhow::Error> =
+            ScalarField::new(&cells);
 
         // assertions
         assert!(scalar_field_f64.is_ok());
