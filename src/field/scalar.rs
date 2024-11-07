@@ -476,11 +476,19 @@ mod tests {
         scalar_field[(0, 0, 0)] = 10.0;
         scalar_field[(1, 2, 0)] = 20.0;
         scalar_field[(2, 2, 2)] = 30.0;
+        scalar_field[(2, 3, 5)] = 40.0;
+        scalar_field[(0, 0, 1)] = 50.0;
+        scalar_field[(0, 1, 0)] = 60.0;
+        scalar_field[(1, 0, 0)] = 70.0;
 
         // assertions
         assert_eq!(scalar_field[(0, 0, 0)], 10.0);
         assert_eq!(scalar_field[(1, 2, 0)], 20.0);
         assert_eq!(scalar_field[(2, 2, 2)], 30.0);
+        assert_eq!(scalar_field[(2, 3, 5)], 40.0);
+        assert_eq!(scalar_field[(0, 0, 1)], 50.0);
+        assert_eq!(scalar_field[(0, 1, 0)], 60.0);
+        assert_eq!(scalar_field[(1, 0, 0)], 70.0);
     }
 
     /// tests `ScalarField<T>` for implementation of `Display`
