@@ -100,7 +100,7 @@ impl<T> Index<(usize, usize, usize)> for ScalarField<T> {
         let (i, j, k) = idx;
 
         // linearly index into `ScalarField<T>` using column major ordering
-        &self.data[i + self.r_offset * j + self.p_offset * k]
+        &self.data[k + self.r_offset * j + self.p_offset * i]
     }
 }
 
@@ -122,7 +122,7 @@ impl<T> IndexMut<(usize, usize, usize)> for ScalarField<T> {
         let (i, j, k) = index;
 
         // linearly index into `ScalarField<T>` using column major ordering
-        &mut self.data[i + self.r_offset * j + self.p_offset * k]
+        &mut self.data[k + self.r_offset * j + self.p_offset * i]
     }
 }
 
