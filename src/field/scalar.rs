@@ -78,6 +78,24 @@ impl<T: Num + Copy> ScalarField<T> {
     pub fn iter_mut<'a>(&'a mut self) -> impl Iterator<Item = &'a mut T> + 'a {
         self.data.iter_mut()
     }
+
+    /// maps a linear index to an (i, j, k) index in a `ScalarField<T>`
+    ///
+    /// # Arguments
+    /// - `&self` reference to self
+    /// - `index: usize` linear index
+    ///
+    /// # Returns
+    /// (usize, usize, usize)` (i, j, k) indices
+    ///
+    /// # Errors
+    ///
+    pub fn ijk_from_linear(&self, index: usize) -> (usize, usize, usize) {
+        let i = index / self.p_offset;
+        let j = (index / self.cells.z) % self.cells.y;
+        let k = index % self.cells.z;
+        (i, j, k)
+    }
 }
 
 /// implements [] operator on `ScalarField<T>`
@@ -448,7 +466,7 @@ mod tests {
             .for_each(|num| assert_eq!(*num, 1.0));
     }
 
-    /// tests `ScalarField` for correct implementation of `Index`
+    /// tests `ScalarField<T>` for correct implementation of `Index`
     ///
     /// # Errors
     /// - `ScalarField<T>` does not implement `Index` correctly
@@ -661,5 +679,27 @@ mod tests {
 
         // assertions
         scalar_field.iter().for_each(|num| assert_eq!(*num, 2.0));
+    }
+
+    /// tests `ScalarField<T>` for correct implementation of `ScalarField<T>::ijk_from_linear()`
+    ///
+    /// # Errors
+    /// - `ScalarField<T>` does not implement `ScalarField<T>::ijk_from_linear()` correctly
+    ///
+    #[test]
+    fn ijk_from_linear_correct() {
+        // setup
+        let scalar_field: ScalarField<f64> = setup().unwrap();
+        let mut ctr = 0;
+
+        // assertions
+        for i in 0..scalar_field.cells.x {
+            for j in 0..scalar_field.cells.y {
+                for k in 0..scalar_field.cells.z {
+                    assert_eq!((i, j, k), scalar_field.ijk_from_linear(ctr));
+                    ctr += 1;
+                }
+            }
+        }
     }
 }
