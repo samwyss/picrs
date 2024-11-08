@@ -71,7 +71,7 @@ impl<T: Display> Display for VectorField<T> {
                         k,
                         self.x[(i, j, k)],
                         self.y[(i, j, k)],
-                        self.z[(i, k, j)],
+                        self.z[(i, j, k)],
                     )?;
                 }
             }
@@ -494,10 +494,7 @@ mod tests {
         let vector_field: VectorField<f64> = setup().unwrap();
 
         // assertions
-        assert_eq!(
-            vector_field.cells,
-            CoordinateTriplet::new(2, 4, 6,).unwrap()
-        );
+        assert_eq!(vector_field.cells, CoordinateTriplet::new(2, 4, 6).unwrap());
     }
 
     /// tests `VectorField::new()` for correct setting of `x` member
