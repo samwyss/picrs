@@ -37,8 +37,8 @@ impl<T: Num + Copy> ScalarField<T> {
         let cells = cells.clone();
 
         // define offsets
-        let r_offset = cells.x;
-        let p_offset = cells.x * cells.y;
+        let r_offset = cells.z;
+        let p_offset = cells.y * cells.z;
 
         // define initial vector field
         let data: Vec<T> = vec![T::zero(); cells.x * cells.y * cells.z];
@@ -99,8 +99,8 @@ impl<T> Index<(usize, usize, usize)> for ScalarField<T> {
         // destructure idx into i, j, and k components
         let (i, j, k) = idx;
 
-        // linearly index into `ScalarField<T>` using column major ordering
-        &self.data[i + self.r_offset * j + self.p_offset * k]
+        // linearly index into `ScalarField<T>` using row major ordering
+        &self.data[k + self.r_offset * j + self.p_offset * i]
     }
 }
 
@@ -121,8 +121,8 @@ impl<T> IndexMut<(usize, usize, usize)> for ScalarField<T> {
         // destructure idx into i, j, and k components
         let (i, j, k) = index;
 
-        // linearly index into `ScalarField<T>` using column major ordering
-        &mut self.data[i + self.r_offset * j + self.p_offset * k]
+        // linearly index into `ScalarField<T>` using row major ordering
+        &mut self.data[k + self.r_offset * j + self.p_offset * i]
     }
 }
 
@@ -381,7 +381,7 @@ mod tests {
         let scalar_field: ScalarField<f64> = setup().unwrap();
 
         // assertions
-        assert_eq!(scalar_field.r_offset, 2);
+        assert_eq!(scalar_field.r_offset, 6);
     }
 
     /// tests `ScalarField::new()` for correct setting of `p_offset` member
@@ -395,7 +395,7 @@ mod tests {
         let scalar_field: ScalarField<f64> = setup().unwrap();
 
         // assertions
-        assert_eq!(scalar_field.p_offset, 8);
+        assert_eq!(scalar_field.p_offset, 24);
     }
 
     /// tests `ScalarField::new()` for correct setting of `data` member
@@ -461,7 +461,7 @@ mod tests {
         // assertions
         assert_eq!(scalar_field[(0, 0, 0)], 0.0);
         assert_eq!(scalar_field[(1, 2, 0)], 0.0);
-        assert_eq!(scalar_field[(2, 2, 2)], 0.0);
+        assert_eq!(scalar_field[(1, 2, 2)], 0.0);
     }
 
     /// tests `ScalarField<T>` for correct implementation of `IndexMut`
@@ -473,22 +473,21 @@ mod tests {
     fn impl_index_mut() {
         // setup
         let mut scalar_field: ScalarField<f64> = setup().unwrap();
-        scalar_field[(0, 0, 0)] = 10.0;
-        scalar_field[(1, 2, 0)] = 20.0;
-        scalar_field[(2, 2, 2)] = 30.0;
-        scalar_field[(2, 3, 5)] = 40.0;
-        scalar_field[(0, 0, 1)] = 50.0;
-        scalar_field[(0, 1, 0)] = 60.0;
-        scalar_field[(1, 0, 0)] = 70.0;
+
+        for i in 0..scalar_field.cells.x {
+            for j in 0..scalar_field.cells.y {
+                for k in 0..scalar_field.cells.z {
+                    scalar_field[(i, j, k)] =
+                        (i * scalar_field.p_offset + j * scalar_field.r_offset + k) as f64;
+                }
+            }
+        }
 
         // assertions
-        assert_eq!(scalar_field[(0, 0, 0)], 10.0);
-        assert_eq!(scalar_field[(1, 2, 0)], 20.0);
-        assert_eq!(scalar_field[(2, 2, 2)], 30.0);
-        assert_eq!(scalar_field[(2, 3, 5)], 40.0);
-        assert_eq!(scalar_field[(0, 0, 1)], 50.0);
-        assert_eq!(scalar_field[(0, 1, 0)], 60.0);
-        assert_eq!(scalar_field[(1, 0, 0)], 70.0);
+        scalar_field
+            .iter()
+            .enumerate()
+            .for_each(|(i, num)| assert_eq!(*num, i as f64))
     }
 
     /// tests `ScalarField<T>` for implementation of `Display`
