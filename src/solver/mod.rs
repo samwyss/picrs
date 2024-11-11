@@ -10,8 +10,6 @@ enum Solver {
     GaussSeidelSOR(GaussSeidelSOR),
 }
 
-impl Solver {
-    pub fn new() -> Result<Solver, anyhow::Error> {
-
-    }
+trait Engine {
+    fn update(d_time: f64);
 }
