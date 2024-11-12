@@ -5,4 +5,3 @@ pub mod model;
 mod world;
 mod field;
 mod helpers;
-mod solver;
