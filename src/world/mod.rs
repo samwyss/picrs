@@ -109,7 +109,7 @@ impl World {
     }
 
     fn update_electrostatic_sys(&mut self) -> Result<(), anyhow::Error> {
-        Self::solve_potential(&mut self)?;
+        Self::solve_potential(self)?;
         Self::solve_electric_field()?;
         Ok(())
     }
