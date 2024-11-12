@@ -5,6 +5,7 @@
 use crate::field::scalar::ScalarField;
 use crate::field::vector::VectorField;
 use crate::helpers::coordinate_triplet::CoordinateTriplet;
+use crate::constants::INV_VAC_PERM;
 
 /// sor acceleration constant
 const SOR_ACC: f64 = 1.4;
@@ -123,10 +124,46 @@ impl World {
 
         // gauss-seidel sor scheme loop
         while (loop_ctr <= GS_MAX_ITER) || (l2_err_norm > GS_TOL) {
-            // solve potential using gauss-seidel sor scheme and poisson's equation
-            //let potential_new: ScalarField<f64> = self.potential.iter().enumerate().map(|(i, pot)| {}).collect();
+            // update potential on interior nodes
+            for i in 1..(self.cells.x - 1) {
+                for j in 1..(self.cells.y - 1) {
+                    for k in 1..(self.cells.z - 1) {
+                        // solve potential using gauss-seidel
+                        let potential_new: f64 = (self.charge_density[(i, j, k)] * INV_VAC_PERM
+                        + self.delta_inv_sq.x * (self.potential[(i + 1, j, k)] + self.potential[(i - 1, j, k)])
+                        + self.delta_inv_sq.y * (self.potential[(i, j + 1, k)] - self.potential[(i, j - 1, k)])
+                        + self.delta_inv_sq.z * (self.potential[(i, j, k + 1)] - self.potential[(i, j, k - 1)]))
+                        / (2.0 * (self.delta_inv_sq.x + self.delta_inv_sq.y + self.delta_inv_sq.z));
 
-            // conditionally update l2 error norm
+                        // apply sor
+                        self.potential[(i, j, k)] += SOR_ACC * (potential_new - self.potential[(i, j, k)]);
+                    }
+                }
+            }
+
+            // conditionally check for convergence
+            if (loop_ctr % CONV_CHECK_ITER) == 0 {
+                // residue accumulator
+                let mut res_acc: f64 = 0.0;
+
+                // accumulate l2 error norm
+                for i in 1..(self.cells.x - 1) {
+                    for j in 1..(self.cells.y - 1) {
+                        for k in 1..(self.cells.z - 1) {
+                            // residue vector value
+                            let res = - self.potential[(i, j, k)] * 2.0 * (self.delta_inv_sq.x + self.delta_inv_sq.y + self.delta_inv_sq.z)
+                                + self.charge_density[(i, j, k)] * INV_VAC_PERM
+                                + self.delta_inv_sq.x * (self.potential[(i + 1, j, k)] + self.potential[(i - 1, j, k)])
+                                + self.delta_inv_sq.y * (self.potential[(i, j + 1, k)] - self.potential[(i, j - 1, k)])
+                                + self.delta_inv_sq.z * (self.potential[(i, j, k + 1)] - self.potential[(i, j, k - 1)]);
+
+                            res_acc += res * res;
+                        }
+                    }
+                }
+
+                // todo check for convergence
+            }
 
             // increment loop counter
             loop_ctr += 1;
