@@ -6,11 +6,17 @@ use crate::field::scalar::ScalarField;
 use crate::field::vector::VectorField;
 use crate::helpers::coordinate_triplet::CoordinateTriplet;
 
-/// SOR acceleration constant
+/// sor acceleration constant
 const SOR_ACC: f64 = 1.4;
 
-/// Gauss-Seidel iterations between convergence check
+/// gauss-seidel iterations between convergence check
 const CONV_CHECK_ITER: u64 = 25;
+
+/// gauss-seidel max iterations
+const GS_MAX_ITER: u64 = 10000;
+
+/// gauss-seidel tolerance
+const GS_TOL: f64 = 1e-5;
 
 /// `World` struct
 ///
@@ -38,7 +44,7 @@ pub struct World {
     /// (m^3) cell volumes
     cell_vol: ScalarField<f64>,
 
-    /// (m^-2) inverse spatial increments squared for use in GS SOR scheme
+    /// (m^-2) inverse spatial increments squared for use in gauss-seidel sor scheme
     delta_inv_sq: CoordinateTriplet<f64>,
 }
 
@@ -71,7 +77,7 @@ impl World {
 
         // todo add assertion that all spacing is less than that of the Debeye length
 
-        // precompute inverse of delta squared for use in GS SOR scheme
+        // precompute inverse of delta squared for use in gauss-seidel sor scheme
         let dx_inv_sq = 1.0 / (dx * dx);
         let dy_inv_sq = 1.0 / (dy * dy);
         let dz_inv_sq = 1.0 / (dz * dz);
@@ -100,6 +106,20 @@ impl World {
             cell_vol,
             delta_inv_sq,
         })
+    }
+
+    fn update_electrostatic_sys() -> Result<(), anyhow::Error> {
+        Self::solve_potential()?;
+        Self::solve_electric_field()?;
+        Ok(())
+    }
+
+    fn solve_potential() -> Result<(), anyhow::Error> {
+        Ok(())
+    }
+
+    fn solve_electric_field() -> Result<(), anyhow::Error> {
+        Ok(())
     }
 }
 
