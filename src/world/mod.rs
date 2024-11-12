@@ -108,13 +108,30 @@ impl World {
         })
     }
 
-    fn update_electrostatic_sys() -> Result<(), anyhow::Error> {
-        Self::solve_potential()?;
+    fn update_electrostatic_sys(&mut self) -> Result<(), anyhow::Error> {
+        Self::solve_potential(&mut self)?;
         Self::solve_electric_field()?;
         Ok(())
     }
 
-    fn solve_potential() -> Result<(), anyhow::Error> {
+    fn solve_potential(&mut self) -> Result<(), anyhow::Error> {
+        // loop counter
+        let mut loop_ctr: u64 = 0;
+
+        // l2 error norm
+        let mut l2_err_norm: f64 = f64::MAX;
+
+        // gauss-seidel sor scheme loop
+        while (loop_ctr <= GS_MAX_ITER) || (l2_err_norm > GS_TOL) {
+            // solve potential using gauss-seidel sor scheme and poisson's equation
+            //let potential_new: ScalarField<f64> = self.potential.iter().enumerate().map(|(i, pot)| {}).collect();
+
+            // conditionally update l2 error norm
+
+            // increment loop counter
+            loop_ctr += 1;
+        }
+
         Ok(())
     }
 
