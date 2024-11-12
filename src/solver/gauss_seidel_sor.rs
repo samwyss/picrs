@@ -14,12 +14,6 @@ impl GaussSeidelSOR {
 
         let tolerance = *tolerance;
 
-        Ok(GaussSeidelSOR{max_iter, tolerance})
-    }
-}
-
-impl Engine for GaussSeidelSOR {
-    fn update(d_time: f64) {
-        todo!()
+        Ok(GaussSeidelSOR { max_iter, tolerance })
     }
 }
