@@ -6,6 +6,12 @@ use crate::field::scalar::ScalarField;
 use crate::field::vector::VectorField;
 use crate::helpers::coordinate_triplet::CoordinateTriplet;
 
+/// SOR acceleration constant
+const SOR_ACC: f64 = 1.4;
+
+/// Gauss-Seidel iterations between convergence check
+const CONV_CHECK_ITER: u64 = 25;
+
 /// `World` struct
 ///
 /// describes the world of the simulation domain
