@@ -37,6 +37,9 @@ pub struct World {
 
     /// (m^3) cell volumes
     cell_vol: ScalarField<f64>,
+
+    /// (m^-2) inverse spatial increments squared for use in GS SOR scheme
+    delta_inv_sq: CoordinateTriplet<f64>,
 }
 
 impl World {
@@ -68,6 +71,12 @@ impl World {
 
         // todo add assertion that all spacing is less than that of the Debeye length
 
+        // precompute inverse of delta squared for use in GS SOR scheme
+        let dx_inv_sq = 1.0 / (dx * dx);
+        let dy_inv_sq = 1.0 / (dy * dy);
+        let dz_inv_sq = 1.0 / (dz * dz);
+        let delta_inv_sq = CoordinateTriplet::new(dx_inv_sq, dy_inv_sq, dz_inv_sq)?;
+
         // initialize electric potential
         let potential: ScalarField<f64> = ScalarField::new(&cells)?;
 
@@ -89,6 +98,7 @@ impl World {
             charge_density,
             electric_field,
             cell_vol,
+            delta_inv_sq,
         })
     }
 }
@@ -245,5 +255,22 @@ mod tests {
 
         // assertions
         assert_eq!(world.cell_vol, ScalarField::new(&cells).unwrap())
+    }
+
+    /// tests `World::new()` for correct setting of `World.delta_inv_sq` member
+    ///
+    /// # Errors
+    /// - `World::new()` sets incorrect `World.delta_inv_sq`
+    /// - call to `CoordinateTriplet::new()` fails
+    ///
+    #[test]
+    fn new_correct_delta_inv_sq() {
+        // setup
+        let world = setup().unwrap();
+
+        // assertions
+        assert_eq!(world.delta_inv_sq.x, 1.0 / (world.delta.x * world.delta.x));
+        assert_eq!(world.delta_inv_sq.y, 1.0 / (world.delta.y * world.delta.y));
+        assert_eq!(world.delta_inv_sq.z, 1.0 / (world.delta.z * world.delta.z));
     }
 }
