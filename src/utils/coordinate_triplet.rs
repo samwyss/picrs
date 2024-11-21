@@ -41,7 +41,7 @@ impl<T: Display> Display for CoordinateTriplet<T> {
 
 #[cfg(test)]
 mod tests {
-    use crate::helpers::coordinate_triplet::CoordinateTriplet;
+    use crate::utils::coordinate_triplet::CoordinateTriplet;
 
     /// tests `CoordinateTriplet::new()` for success
     ///

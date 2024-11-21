@@ -1,4 +1,4 @@
-use crate::helpers::coordinate_triplet::CoordinateTriplet;
+use crate::utils::coordinate_triplet::CoordinateTriplet;
 use num::Num;
 use std::fmt::{Display, Formatter};
 use std::ops::{AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
@@ -331,7 +331,7 @@ impl<T: Copy + DivAssign> DivAssign<T> for ScalarField<T> {
 #[cfg(test)]
 mod tests {
     use crate::field::scalar::ScalarField;
-    use crate::helpers::coordinate_triplet::CoordinateTriplet;
+    use crate::utils::coordinate_triplet::CoordinateTriplet;
 
     /// helper function that sets up a `ScalarField<f64>` for testing
     ///

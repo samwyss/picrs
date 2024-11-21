@@ -4,7 +4,7 @@
 
 use crate::field::scalar::ScalarField;
 use crate::field::vector::VectorField;
-use crate::helpers::coordinate_triplet::CoordinateTriplet;
+use crate::utils::coordinate_triplet::CoordinateTriplet;
 use crate::constants::INV_VAC_PERM;
 
 /// sor acceleration constant
@@ -181,7 +181,7 @@ impl World {
 mod tests {
     use crate::field::scalar::ScalarField;
     use crate::field::vector::VectorField;
-    use crate::helpers::coordinate_triplet::CoordinateTriplet;
+    use crate::utils::coordinate_triplet::CoordinateTriplet;
     use crate::world::World;
 
     /// helper function that sets up a `World` for testing

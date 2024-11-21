@@ -1,5 +1,5 @@
 use crate::field::scalar::ScalarField;
-use crate::helpers::coordinate_triplet::CoordinateTriplet;
+use crate::utils::coordinate_triplet::CoordinateTriplet;
 use num::Num;
 use std::fmt::{Display, Formatter};
 use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
@@ -443,7 +443,7 @@ impl<T: Copy + DivAssign + Num> DivAssign<ScalarField<T>> for VectorField<T> {
 mod tests {
     use crate::field::scalar::ScalarField;
     use crate::field::vector::VectorField;
-    use crate::helpers::coordinate_triplet::CoordinateTriplet;
+    use crate::utils::coordinate_triplet::CoordinateTriplet;
 
     /// helper function that sets up a `VectorField<f64>` for testing
     ///
