@@ -35,3 +35,4 @@ codegen-units = 1
 [dependencies]
 anyhow = { version = "*" }
 num = { version = "*" }
+vtkio = { version = "*" }
