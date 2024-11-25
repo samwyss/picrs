@@ -2,14 +2,14 @@
 //!
 //! describes a model facade struct for using picrs
 
-use crate::world::World;
+use crate::engine::Electrostatic;
 
 /// `Model` struct
 ///
 /// provides a facade for using picrs
 pub struct Model {
-    // world simulation object
-    world: World,
+    // engine simulation object
+    engine: Electrostatic,
 }
 
 impl Model {
@@ -27,10 +27,10 @@ impl Model {
         let size: [f64; 3] = [1.0, 1.0, 1.0];
         let cells: [usize; 3] = [10, 10, 10];
 
-        // construct world
-        let world = World::new(&size, &cells)?;
+        // construct engine
+        let engine = Electrostatic::new(&size, &cells)?;
 
-        Ok(Model { world })
+        Ok(Model { engine })
     }
 
     /// runs configured `Model`
@@ -45,7 +45,7 @@ impl Model {
     ///
     pub fn run(&mut self) -> Result<(), anyhow::Error> {
         for step in 0..10 {
-            self.world.update_electrostatic_sys()?;
+            self.engine.update()?;
         }
 
         Ok(())

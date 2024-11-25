@@ -1,6 +1,6 @@
-//! world module
+//! engine module
 //!
-//! contents describe world of the simulation domain
+//! contents describe several computational engines for pic models
 
 use crate::constants::INV_VAC_PERM;
 use crate::field::scalar::ScalarField;
@@ -20,11 +20,11 @@ const GS_MAX_ITER: u64 = 10000;
 /// gauss-seidel tolerance
 const GS_TOL: f64 = 1e-5;
 
-/// `World` struct
+/// `Electrostatic` struct
 ///
-/// describes the world of the simulation domain
+/// an electrostatic pic engine
 #[derive(Debug)]
-pub struct World {
+pub struct Electrostatic {
     /// (m) size of bounding box
     size: CoordinateTriplet<f64>,
 
@@ -50,21 +50,21 @@ pub struct World {
     delta_inv_sq: CoordinateTriplet<f64>,
 }
 
-impl World {
-    /// `World` constructor
+impl Electrostatic {
+    /// `Electrostatic` constructor
     ///
     /// # Arguments
     /// - `size`: &[f64; 3] (m) size of bounding box
     /// - `cells`: &[usize; 3] number of cells
     ///
     /// # Returns
-    /// `Result<World, anyhow::Error>`
+    /// `Result<Electrostatic, anyhow::Error>`
     ///
     /// # Errors
     /// - any call to `CoordinateTriplet::new()` fails
     /// - any call to `ScalarField::new()` fails
     /// - any call to `VectorField::new()` fails
-    pub fn new(size: &[f64; 3], cells: &[usize; 3]) -> Result<World, anyhow::Error> {
+    pub fn new(size: &[f64; 3], cells: &[usize; 3]) -> Result<Electrostatic, anyhow::Error> {
         // unpack dimensions
         let size: CoordinateTriplet<f64> = CoordinateTriplet::new(size[0], size[1], size[2])?;
 
@@ -98,7 +98,7 @@ impl World {
         // todo fill in properly
         let cell_vol: ScalarField<f64> = ScalarField::new(&cells)?;
 
-        Ok(World {
+        Ok(Electrostatic {
             size,
             cells,
             delta,
@@ -110,7 +110,7 @@ impl World {
         })
     }
 
-    pub fn update_electrostatic_sys(&mut self) -> Result<(), anyhow::Error> {
+    pub fn update(&mut self) -> Result<(), anyhow::Error> {
         Self::solve_potential(self)?;
         Self::solve_electric_field(self)?;
         Ok(())
@@ -124,7 +124,7 @@ impl World {
         let mut l2_err_norm: f64 = f64::MAX;
 
         // gauss-seidel sor scheme loop
-        while (l2_err_norm > GS_TOL) {
+        while l2_err_norm > GS_TOL {
             // update potential on interior nodes
             for i in 1..(self.cells.x - 1) {
                 for j in 1..(self.cells.y - 1) {
@@ -183,7 +183,7 @@ impl World {
             }
 
             // error if convergence is not met
-            if (loop_ctr == GS_MAX_ITER) {
+            if loop_ctr == GS_MAX_ITER {
                 return Err(anyhow!("solution to potential did not converge to tolerance of {GS_TOL} in {GS_MAX_ITER} iterations"));
             }
 
@@ -200,15 +200,15 @@ impl World {
         let n_two_dy_inv = -1.0 / (2.0 * self.delta.y);
         let n_two_dz_inv = -1.0 / (2.0 * self.delta.z);
 
-        for i in 0..(self.cells.x) {
-            for j in 0..(self.cells.y) {
-                for k in 0..(self.cells.z) {
+        for i in 0..self.cells.x {
+            for j in 0..self.cells.y {
+                for k in 0..self.cells.z {
                     // x-component
-                    if (i != 0 && i != self.cells.x - 1) {
+                    if i != 0 && i != self.cells.x - 1 {
                         // central difference interior nodes
                         self.electric_field.x[(i, j, k)] = n_two_dx_inv
                             * (self.potential[(i + 1, j, k)] - self.potential[(i - 1, j, k)]);
-                    } else if (i == 0) {
+                    } else if i == 0 {
                         // forward difference low edge
                         self.electric_field.x[(i, j, k)] = n_two_dx_inv
                             * (-3.0 * self.potential[(i, j, k)]
@@ -222,11 +222,11 @@ impl World {
                     }
 
                     // y-component
-                    if (j != 0 && j != self.cells.y - 1) {
+                    if j != 0 && j != self.cells.y - 1 {
                         // central difference interior nodes
                         self.electric_field.y[(i, j, k)] = n_two_dy_inv
                             * (self.potential[(i, j + 1, k)] - self.potential[(i, j - 1, k)]);
-                    } else if (j == 0) {
+                    } else if j == 0 {
                         // forward difference low edge
                         self.electric_field.y[(i, j, k)] = n_two_dy_inv
                             * (-3.0 * self.potential[(i, j, k)]
@@ -240,11 +240,11 @@ impl World {
                     }
 
                     // z-component
-                    if (k != 0 && k != self.cells.z - 1) {
+                    if k != 0 && k != self.cells.z - 1 {
                         // central difference interior nodes
                         self.electric_field.z[(i, j, k)] = n_two_dz_inv
                             * (self.potential[(i, j, k + 1)] - self.potential[(i, j, k - 1)]);
-                    } else if (k == 0) {
+                    } else if k == 0 {
                         // forward difference low edge
                         self.electric_field.z[(i, j, k)] = n_two_dz_inv
                             * (-3.0 * self.potential[(i, j, k)]
@@ -266,172 +266,187 @@ impl World {
 
 #[cfg(test)]
 mod tests {
+    use crate::engine::Electrostatic;
     use crate::field::scalar::ScalarField;
     use crate::field::vector::VectorField;
     use crate::utils::coordinate_triplet::CoordinateTriplet;
-    use crate::world::World;
 
-    /// helper function that sets up a `World` for testing
+    /// helper function that sets up a `Electrostatic` for testing
     ///
     /// # Arguments
     ///
     /// # Returns
-    /// `Result<World, anyhow::Error>`
+    /// `Result<Electrostatic, anyhow::Error>`
     ///
     /// # Errors
     ///
-    fn setup() -> Result<World, anyhow::Error> {
+    fn setup() -> Result<Electrostatic, anyhow::Error> {
         let size: [f64; 3] = [1.0, 2.0, 3.0];
         let cells: [usize; 3] = [3, 11, 31];
-        World::new(&size, &cells)
+        Electrostatic::new(&size, &cells)
     }
 
-    /// tests `World::new()` for success
+    /// tests `Electrostatic::new()` for success
     ///
     /// # Errors
-    /// - `World::new()` fails for valid input
+    /// - `Electrostatic::new()` fails for valid input
     ///
     #[test]
     fn new_success() {
         assert!(setup().is_ok());
     }
 
-    /// tests `World::new()` for correct setting of `World.size` member
+    /// tests `Electrostatic::new()` for correct setting of `Electrostatic.size` member
     ///
     /// # Errors
-    /// - `World::new()` sets incorrect `world.size.x`
-    /// - `World::new()` sets incorrect `world.size.y`
-    /// - `World::new()` sets incorrect `world.size.z`
+    /// - `Electrostatic::new()` sets incorrect `engine.size.x`
+    /// - `Electrostatic::new()` sets incorrect `engine.size.y`
+    /// - `Electrostatic::new()` sets incorrect `engine.size.z`
     ///
     #[test]
     fn new_correct_size() {
         // setup
-        let world = setup().unwrap();
+        let electrostatic = setup().unwrap();
 
         // assertions
-        assert_eq!(world.size.x, 1.0);
-        assert_eq!(world.size.y, 2.0);
-        assert_eq!(world.size.z, 3.0);
+        assert_eq!(electrostatic.size.x, 1.0);
+        assert_eq!(electrostatic.size.y, 2.0);
+        assert_eq!(electrostatic.size.z, 3.0);
     }
 
-    /// tests `World::new()` for correct setting of `World.cells' member
+    /// tests `Electrostatic::new()` for correct setting of `Electrostatic.cells' member
     ///
     /// # Errors
-    /// - `World::new()` sets incorrect `world.cells.x`
-    /// - `World::new()` sets incorrect `world.cells.y`
-    /// - `World::new()` sets incorrect `world.cells.z`
+    /// - `Electrostatic::new()` sets incorrect `engine.cells.x`
+    /// - `Electrostatic::new()` sets incorrect `engine.cells.y`
+    /// - `Electrostatic::new()` sets incorrect `engine.cells.z`
     ///
     #[test]
     fn new_correct_cells() {
         // setup
-        let world = setup().unwrap();
+        let electrostatic = setup().unwrap();
 
         // assertions
-        assert_eq!(world.cells.x, 3);
-        assert_eq!(world.cells.y, 11);
-        assert_eq!(world.cells.z, 31);
+        assert_eq!(electrostatic.cells.x, 3);
+        assert_eq!(electrostatic.cells.y, 11);
+        assert_eq!(electrostatic.cells.z, 31);
     }
 
-    /// tests `World::new()` for correct setting of `World.delta` member
+    /// tests `Electrostatic::new()` for correct setting of `Electrostatic.delta` member
     ///
     /// # Errors
-    /// - `World::new()` sets incorrect `world.delta.x`
-    /// - `World::new()` sets incorrect `world.delta.y`
-    /// - `World::new()` sets incorrect `world.delta.z`
+    /// - `Electrostatic::new()` sets incorrect `engine.delta.x`
+    /// - `Electrostatic::new()` sets incorrect `engine.delta.y`
+    /// - `Electrostatic::new()` sets incorrect `engine.delta.z`
     ///
     #[test]
     fn new_correct_delta() {
         // setup
-        let world = setup().unwrap();
+        let electrostatic = setup().unwrap();
 
         // assertions
-        assert_eq!(world.delta.x, 0.5);
-        assert_eq!(world.delta.y, 0.2);
-        assert_eq!(world.delta.z, 0.1);
+        assert_eq!(electrostatic.delta.x, 0.5);
+        assert_eq!(electrostatic.delta.y, 0.2);
+        assert_eq!(electrostatic.delta.z, 0.1);
     }
 
-    /// tests `World::new()` for correct setting of `World.potential` member
+    /// tests `Electrostatic::new()` for correct setting of `Electrostatic.potential` member
     ///
     /// # Errors
-    /// - `World::new()` sets incorrect `World.potential`
+    /// - `Electrostatic::new()` sets incorrect `Electrostatic.potential`
     /// - call to `CoordinateTriplet::new()` fails
     /// - call to `ScalarField::new()` fails
     ///
     #[test]
     fn new_correct_potential() {
         // setup
-        let world = setup().unwrap();
+        let electrostatic = setup().unwrap();
         let cells = CoordinateTriplet::new(3, 11, 31).unwrap();
 
         // assertions
-        assert_eq!(world.potential, ScalarField::new(&cells).unwrap())
+        assert_eq!(electrostatic.potential, ScalarField::new(&cells).unwrap())
     }
 
-    /// tests `World::new()` for correct setting of `World.charge_density` member
+    /// tests `Electrostatic::new()` for correct setting of `Electrostatic.charge_density` member
     ///
     /// # Errors
-    /// - `World::new()` sets incorrect `World.charge_density`
+    /// - `Electrostatic::new()` sets incorrect `Electrostatic.charge_density`
     /// - call to `CoordinateTriplet::new()` fails
     /// - call to `ScalarField::new()` fails
     ///
     #[test]
     fn new_correct_charge_density() {
         // setup
-        let world = setup().unwrap();
+        let electrostatic = setup().unwrap();
         let cells = CoordinateTriplet::new(3, 11, 31).unwrap();
 
         // assertions
-        assert_eq!(world.charge_density, ScalarField::new(&cells).unwrap())
+        assert_eq!(
+            electrostatic.charge_density,
+            ScalarField::new(&cells).unwrap()
+        )
     }
 
-    /// tests `World::new()` for correct setting of `World.electric_field` member
+    /// tests `Electrostatic::new()` for correct setting of `Electrostatic.electric_field` member
     ///
     /// # Errors
-    /// - `World::new()` sets incorrect `World.electric_field`
+    /// - `Electrostatic::new()` sets incorrect `Electrostatic.electric_field`
     /// - call to `CoordinateTriplet::new()` fails
     /// - call to `VectorField::new()` fails
     ///
     #[test]
     fn new_correct_electric_field() {
         // setup
-        let world = setup().unwrap();
+        let electrostatic = setup().unwrap();
         let cells = CoordinateTriplet::new(3, 11, 31).unwrap();
 
         // assertions
-        assert_eq!(world.electric_field, VectorField::new(&cells).unwrap())
+        assert_eq!(
+            electrostatic.electric_field,
+            VectorField::new(&cells).unwrap()
+        )
     }
 
-    /// tests `World::new()` for correct setting of `World.cell_vol` member
+    /// tests `Electrostatic::new()` for correct setting of `Electrostatic.cell_vol` member
     ///
     /// # Errors
-    /// - `World::new()` sets incorrect `World.cell_vol`
+    /// - `Electrostatic::new()` sets incorrect `Electrostatic.cell_vol`
     /// - call to `CoordinateTriplet::new()` fails
     /// - call to `ScalarField::new()` fails
     ///
     #[test]
     fn new_correct_cell_vol() {
         // setup
-        let world = setup().unwrap();
+        let electrostatic = setup().unwrap();
         let cells = CoordinateTriplet::new(3, 11, 31).unwrap();
 
         // assertions
-        assert_eq!(world.cell_vol, ScalarField::new(&cells).unwrap())
+        assert_eq!(electrostatic.cell_vol, ScalarField::new(&cells).unwrap())
     }
 
-    /// tests `World::new()` for correct setting of `World.delta_inv_sq` member
+    /// tests `Electrostatic::new()` for correct setting of `Electrostatic.delta_inv_sq` member
     ///
     /// # Errors
-    /// - `World::new()` sets incorrect `World.delta_inv_sq`
+    /// - `Electrostatic::new()` sets incorrect `Electrostatic.delta_inv_sq`
     /// - call to `CoordinateTriplet::new()` fails
     ///
     #[test]
     fn new_correct_delta_inv_sq() {
         // setup
-        let world = setup().unwrap();
+        let electrostatic = setup().unwrap();
 
         // assertions
-        assert_eq!(world.delta_inv_sq.x, 1.0 / (world.delta.x * world.delta.x));
-        assert_eq!(world.delta_inv_sq.y, 1.0 / (world.delta.y * world.delta.y));
-        assert_eq!(world.delta_inv_sq.z, 1.0 / (world.delta.z * world.delta.z));
+        assert_eq!(
+            electrostatic.delta_inv_sq.x,
+            1.0 / (electrostatic.delta.x * electrostatic.delta.x)
+        );
+        assert_eq!(
+            electrostatic.delta_inv_sq.y,
+            1.0 / (electrostatic.delta.y * electrostatic.delta.y)
+        );
+        assert_eq!(
+            electrostatic.delta_inv_sq.z,
+            1.0 / (electrostatic.delta.z * electrostatic.delta.z)
+        );
     }
 }
