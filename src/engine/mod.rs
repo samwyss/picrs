@@ -28,7 +28,7 @@ pub struct Electrostatic {
     /// (m) size of bounding box
     size: CoordinateTriplet<f64>,
 
-    /// number of cells
+    /// number of cells in bounding box
     cells: CoordinateTriplet<usize>,
 
     /// (m) spatial increment
@@ -37,7 +37,7 @@ pub struct Electrostatic {
     /// (V) electric field potential
     potential: ScalarField<f64>,
 
-    /// (c/m^3) electric charge density
+    /// (C/m^3) electric charge density
     charge_density: ScalarField<f64>,
 
     /// (V/m) electric field
@@ -110,13 +110,38 @@ impl Electrostatic {
         })
     }
 
+    /// updates `Electrostatic` to the next time step
+    ///
+    /// # Arguments
+    /// - `self`: &mut self mutable reference to self
+    ///
+    /// # Returns
+    /// Result<(), anyhow::Error>`
+    ///
+    /// # Errors
+    /// - any call to `Self::update_potential()` fails
+    /// - any call to `Self::solve_electric_field()` fails
     pub fn update(&mut self) -> Result<(), anyhow::Error> {
-        Self::solve_potential(self)?;
+        // update electrostatic potential
+        Self::update_potential(self)?;
+        
+        // update electric field from calculated electrostatic potential
         Self::solve_electric_field(self)?;
+        
         Ok(())
     }
 
-    fn solve_potential(&mut self) -> Result<(), anyhow::Error> {
+    /// updates electric potential of `Electrostatic`
+    ///
+    /// # Arguments
+    /// - `self`: &mut self mutable reference to self
+    ///
+    /// # Returns
+    /// Result<(), anyhow::Error>`
+    ///
+    /// # Errors
+    /// - solution to potential did not converge to tolerance of GS_TOL in GS_MAX_ITER iterations
+    fn update_potential(&mut self) -> Result<(), anyhow::Error> {
         // loop counter
         let mut loop_ctr: u64 = 0;
 
@@ -194,6 +219,17 @@ impl Electrostatic {
         Ok(())
     }
 
+    /// updates electric electric_field of `Electrostatic`
+    /// 
+    /// todo this implementation can be improved to be branchless
+    ///
+    /// # Arguments
+    /// - `self`: &mut self mutable reference to self
+    ///
+    /// # Returns
+    /// Result<(), anyhow::Error>`
+    ///
+    /// # Errors
     fn solve_electric_field(&mut self) -> Result<(), anyhow::Error> {
         // precompute negative inverses
         let n_two_dx_inv = -1.0 / (2.0 * self.delta.x);
