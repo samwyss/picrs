@@ -2,10 +2,11 @@
 //!
 //! contents describe world of the simulation domain
 
+use crate::constants::INV_VAC_PERM;
 use crate::field::scalar::ScalarField;
 use crate::field::vector::VectorField;
 use crate::utils::coordinate_triplet::CoordinateTriplet;
-use crate::constants::INV_VAC_PERM;
+use anyhow::anyhow;
 
 /// sor acceleration constant
 const SOR_ACC: f64 = 1.4;
@@ -111,7 +112,7 @@ impl World {
 
     fn update_electrostatic_sys(&mut self) -> Result<(), anyhow::Error> {
         Self::solve_potential(self)?;
-        Self::solve_electric_field()?;
+        Self::solve_electric_field(self)?;
         Ok(())
     }
 
@@ -123,20 +124,27 @@ impl World {
         let mut l2_err_norm: f64 = f64::MAX;
 
         // gauss-seidel sor scheme loop
-        while (loop_ctr <= GS_MAX_ITER) || (l2_err_norm > GS_TOL) {
+        while (l2_err_norm > GS_TOL) {
             // update potential on interior nodes
             for i in 1..(self.cells.x - 1) {
                 for j in 1..(self.cells.y - 1) {
                     for k in 1..(self.cells.z - 1) {
                         // solve potential using gauss-seidel
                         let potential_new: f64 = (self.charge_density[(i, j, k)] * INV_VAC_PERM
-                        + self.delta_inv_sq.x * (self.potential[(i + 1, j, k)] + self.potential[(i - 1, j, k)])
-                        + self.delta_inv_sq.y * (self.potential[(i, j + 1, k)] - self.potential[(i, j - 1, k)])
-                        + self.delta_inv_sq.z * (self.potential[(i, j, k + 1)] - self.potential[(i, j, k - 1)]))
-                        / (2.0 * (self.delta_inv_sq.x + self.delta_inv_sq.y + self.delta_inv_sq.z));
+                            + self.delta_inv_sq.x
+                                * (self.potential[(i + 1, j, k)] + self.potential[(i - 1, j, k)])
+                            + self.delta_inv_sq.y
+                                * (self.potential[(i, j + 1, k)] - self.potential[(i, j - 1, k)])
+                            + self.delta_inv_sq.z
+                                * (self.potential[(i, j, k + 1)] - self.potential[(i, j, k - 1)]))
+                            / (2.0
+                                * (self.delta_inv_sq.x
+                                    + self.delta_inv_sq.y
+                                    + self.delta_inv_sq.z));
 
                         // apply sor
-                        self.potential[(i, j, k)] += SOR_ACC * (potential_new - self.potential[(i, j, k)]);
+                        self.potential[(i, j, k)] +=
+                            SOR_ACC * (potential_new - self.potential[(i, j, k)]);
                     }
                 }
             }
@@ -146,23 +154,37 @@ impl World {
                 // residue accumulator
                 let mut res_acc: f64 = 0.0;
 
-                // accumulate l2 error norm
+                // accumulate residue = Ax - b
                 for i in 1..(self.cells.x - 1) {
                     for j in 1..(self.cells.y - 1) {
                         for k in 1..(self.cells.z - 1) {
                             // residue vector value
-                            let res = - self.potential[(i, j, k)] * 2.0 * (self.delta_inv_sq.x + self.delta_inv_sq.y + self.delta_inv_sq.z)
+                            let res = -self.potential[(i, j, k)]
+                                * 2.0
+                                * (self.delta_inv_sq.x + self.delta_inv_sq.y + self.delta_inv_sq.z)
                                 + self.charge_density[(i, j, k)] * INV_VAC_PERM
-                                + self.delta_inv_sq.x * (self.potential[(i + 1, j, k)] + self.potential[(i - 1, j, k)])
-                                + self.delta_inv_sq.y * (self.potential[(i, j + 1, k)] - self.potential[(i, j - 1, k)])
-                                + self.delta_inv_sq.z * (self.potential[(i, j, k + 1)] - self.potential[(i, j, k - 1)]);
+                                + self.delta_inv_sq.x
+                                    * (self.potential[(i + 1, j, k)]
+                                        + self.potential[(i - 1, j, k)])
+                                + self.delta_inv_sq.y
+                                    * (self.potential[(i, j + 1, k)]
+                                        - self.potential[(i, j - 1, k)])
+                                + self.delta_inv_sq.z
+                                    * (self.potential[(i, j, k + 1)]
+                                        - self.potential[(i, j, k - 1)]);
 
                             res_acc += res * res;
                         }
                     }
                 }
+                // update l2 error norm
+                l2_err_norm =
+                    (res_acc / (self.cells.x * self.cells.y * self.cells.z) as f64).sqrt();
+            }
 
-                // todo check for convergence
+            // error if convergence is not met
+            if (loop_ctr == GS_MAX_ITER) {
+                return Err(anyhow!("solution to potential did not converge to tolerance of {GS_TOL} in {GS_MAX_ITER} iterations"));
             }
 
             // increment loop counter
@@ -172,7 +194,72 @@ impl World {
         Ok(())
     }
 
-    fn solve_electric_field() -> Result<(), anyhow::Error> {
+    fn solve_electric_field(&mut self) -> Result<(), anyhow::Error> {
+        // precompute negative inverses
+        let n_two_dx_inv = -1.0 / (2.0 * self.delta.x);
+        let n_two_dy_inv = -1.0 / (2.0 * self.delta.y);
+        let n_two_dz_inv = -1.0 / (2.0 * self.delta.z);
+
+        for i in 0..(self.cells.x) {
+            for j in 0..(self.cells.y) {
+                for k in 0..(self.cells.z) {
+                    // x-component
+                    if (i != 0 && i != self.cells.x - 1) {
+                        // central difference interior nodes
+                        self.electric_field.x[(i, j, k)] = n_two_dx_inv
+                            * (self.potential[(i + 1, j, k)] - self.potential[(i - 1, j, k)]);
+                    } else if (i == 0) {
+                        // forward difference low edge
+                        self.electric_field.x[(i, j, k)] = n_two_dx_inv
+                            * (-3.0 * self.potential[(i, j, k)]
+                                + 4.0 * self.potential[(i + 1, j, k)]
+                                - self.potential[(i + 2, j, k)]);
+                    } else {
+                        // backward difference high edge
+                        self.electric_field.x[(i, j, k)] = n_two_dx_inv
+                            * (self.potential[(i - 2, j, k)] - 4.0 * self.potential[(i - 1, j, k)]
+                                + 3.0 * self.potential[(i, j, k)]);
+                    }
+
+                    // y-component
+                    if (j != 0 && j != self.cells.y - 1) {
+                        // central difference interior nodes
+                        self.electric_field.y[(i, j, k)] = n_two_dy_inv
+                            * (self.potential[(i , j + 1, k)] - self.potential[(i , j - 1, k)]);
+                    } else if (j == 0) {
+                        // forward difference low edge
+                        self.electric_field.y[(i, j, k)] = n_two_dy_inv
+                            * (-3.0 * self.potential[(i, j, k)]
+                                + 4.0 * self.potential[(i, j + 1, k)]
+                                - self.potential[(i, j + 2, k)]);
+                    } else {
+                        // backward difference high edge
+                        self.electric_field.y[(i, j, k)] = n_two_dy_inv
+                            * (self.potential[(i, j - 2, k)] - 4.0 * self.potential[(i, j - 1, k)]
+                                + 3.0 * self.potential[(i, j, k)]);
+                    }
+
+                    // z-component
+                    if (k != 0 && k != self.cells.z - 1) {
+                        // central difference interior nodes
+                        self.electric_field.z[(i, j, k)] = n_two_dz_inv
+                            * (self.potential[(i, j, k + 1)] - self.potential[(i, j, k - 1)]);
+                    } else if (k == 0) {
+                        // forward difference low edge
+                        self.electric_field.z[(i, j, k)] = n_two_dz_inv
+                            * (-3.0 * self.potential[(i, j, k)]
+                                + 4.0 * self.potential[(i, j, k + 1)]
+                                - self.potential[(i, j, k + 2)]);
+                    } else {
+                        // backward difference high edge
+                        self.electric_field.z[(i, j, k)] = n_two_dz_inv
+                            * (self.potential[(i, j, k - 2)] - 4.0 * self.potential[(i, j, k - 1)]
+                                + 3.0 * self.potential[(i, j, k)]);
+                    }
+                }
+            }
+        }
+
         Ok(())
     }
 }
