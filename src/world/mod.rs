@@ -110,7 +110,7 @@ impl World {
         })
     }
 
-    fn update_electrostatic_sys(&mut self) -> Result<(), anyhow::Error> {
+    pub fn update_electrostatic_sys(&mut self) -> Result<(), anyhow::Error> {
         Self::solve_potential(self)?;
         Self::solve_electric_field(self)?;
         Ok(())
@@ -225,7 +225,7 @@ impl World {
                     if (j != 0 && j != self.cells.y - 1) {
                         // central difference interior nodes
                         self.electric_field.y[(i, j, k)] = n_two_dy_inv
-                            * (self.potential[(i , j + 1, k)] - self.potential[(i , j - 1, k)]);
+                            * (self.potential[(i, j + 1, k)] - self.potential[(i, j - 1, k)]);
                     } else if (j == 0) {
                         // forward difference low edge
                         self.electric_field.y[(i, j, k)] = n_two_dy_inv
