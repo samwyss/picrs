@@ -44,6 +44,10 @@ impl Model {
     /// # Errors
     ///
     pub fn run(&mut self) -> Result<(), anyhow::Error> {
+        for step in 0..10 {
+            self.world.update_electrostatic_sys()?;
+        }
+
         Ok(())
     }
 }
